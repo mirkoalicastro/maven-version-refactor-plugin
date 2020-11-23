@@ -31,7 +31,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
     <intentionAction order="first">
-      <className>controller.MavenVersionRefactorController</className>
+      <className>action.MavenVersionRefactorAction</className>
     </intentionAction>
   </extensions>
 
