@@ -19,19 +19,15 @@ class MavenVersionRefactorAction: PsiElementBaseIntentionAction(), IntentionActi
     private val versionUpdatingFacade = VersionUpdatingFacade()
     private val pluginAvailabilityProvider = PluginAvailabilityProvider()
 
-    override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) {
-        versionUpdatingFacade.replaceVersion(psiElement)
-    }
+    override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) =
+            versionUpdatingFacade.replaceVersion(psiElement)
 
-    override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement): Boolean {
-        return pluginAvailabilityProvider.provide(psiElement)
-    }
+    override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement) =
+            pluginAvailabilityProvider.provide(psiElement)
+
+    override fun getText() = PLUGIN_TEXT
 
     override fun getFamilyName(): @IntentionFamilyName String {
         return FAMILY_NAME
-    }
-
-    override fun getText(): String {
-        return PLUGIN_TEXT
     }
 }
