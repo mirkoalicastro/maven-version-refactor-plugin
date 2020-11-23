@@ -1,0 +1,1 @@
+# maven-version-refactor-plugin
