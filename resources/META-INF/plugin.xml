@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>com.your.company.unique.plugin.id</id>
+  <id>com.mirkoalicastro.mavenversionrefactor</id>
   <name>Maven Version Refactor</name>
   <version>1.0.1</version>
   <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
