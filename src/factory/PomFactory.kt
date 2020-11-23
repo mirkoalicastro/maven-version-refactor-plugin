@@ -6,8 +6,6 @@ import domain.Dependency
 import domain.Pom
 import domain.XmlDependency
 import domain.constant.XmlNodeName
-import java.util.*
-import java.util.stream.Collectors
 
 class PomFactory {
     companion object {
@@ -83,12 +81,10 @@ class PomFactory {
         }
     }
 
-    private fun <T : XmlElement?> extractXmlElement(dependencyTag: XmlTag, clazz: Class<T>): List<T> {
-        return Arrays.stream(dependencyTag.value.children)
-                .filter { obj: XmlTagChild? -> clazz.isInstance(obj) }
-                .map { obj: XmlTagChild? -> clazz.cast(obj) }
-                .collect(Collectors.toList())
-    }
+    private fun <T : XmlElement> extractXmlElement(dependencyTag: XmlTag, clazz: Class<T>) =
+            dependencyTag.value.children
+                    .filter { clazz.isInstance(it) }
+                    .map { clazz.cast(it) }
 
     private fun createDependency(version: String, groupIdTag: XmlTag, artifactIdTag: XmlTag): Dependency {
         val groupId = groupIdTag.value.text
