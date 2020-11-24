@@ -23,18 +23,26 @@ class FreeVersionProvider {
     }
 
     private fun fallbackWithFullName(properties: XmlTag, dependency: Dependency): String? {
-        var candidate = dependency.groupId + DASH + dependency.artifactId + VERSION_SUFFIX
-        var attempt = 1
-        while (isPropertyInUse(properties, candidate) && attempt < MAX_ATTEMPTS) {
-            candidate = dependency.groupId + DASH + dependency.artifactId + DASH + (attempt + 1) + VERSION_SUFFIX
-            attempt++
-        }
+        val candidate = dependency.groupId + DASH + dependency.artifactId + VERSION_SUFFIX
         return if (!isPropertyInUse(properties, candidate)) {
             candidate
         } else {
-            null
+            val prefix = dependency.groupId + DASH + dependency.artifactId + DASH
+            fallbackWithFullNameAndAttempt(properties, prefix, 1)
         }
     }
+
+    private fun fallbackWithFullNameAndAttempt(properties: XmlTag, prefix: String, attempt: Int): String? =
+            if (attempt <= MAX_ATTEMPTS) {
+                val candidate = prefix + (attempt+1) + VERSION_SUFFIX
+                if (!isPropertyInUse(properties, candidate)) {
+                    candidate
+                } else {
+                    fallbackWithFullNameAndAttempt(properties, prefix, attempt+1)
+                }
+            } else {
+                null
+            }
 
     private fun isPropertyInUse(properties: XmlTag, property: String) =
             properties.children
