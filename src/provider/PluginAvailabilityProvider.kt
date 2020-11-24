@@ -8,7 +8,7 @@ class PluginAvailabilityProvider {
     private val freeVersionProvider = FreeVersionProvider()
 
     fun provide(psiElement: PsiElement): Boolean {
-        val pom = pomFactory.create(psiElement)q
+        val pom = pomFactory.create(psiElement)
         return if (pom != null) {
             freeVersionProvider.getFreeVersion(pom.project, pom.xmlDependency.dependency) != null
         } else {
