@@ -33,7 +33,7 @@ class FreeVersionProvider {
     }
 
     private fun fallbackWithFullNameAndAttempt(properties: XmlTag, prefix: String, attempt: Int): String? =
-            if (attempt <= MAX_ATTEMPTS) {
+            if (attempt < MAX_ATTEMPTS) {
                 val candidate = prefix + (attempt+1) + VERSION_SUFFIX
                 if (!isPropertyInUse(properties, candidate)) {
                     candidate

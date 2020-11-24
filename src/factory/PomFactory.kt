@@ -1,7 +1,10 @@
 package factory
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.xml.*
+import com.intellij.psi.xml.XmlElement
+import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.xml.XmlText
+import com.intellij.psi.xml.XmlToken
 import domain.Dependency
 import domain.Pom
 import domain.XmlDependency
@@ -22,20 +25,23 @@ class PomFactory {
     }
 
     private fun create(currentXmlToken: XmlToken): Pom? {
-        var currentText = castOrNull(currentXmlToken.parent, XmlText::class.java)
-        var currentTag = castOrNull(currentXmlToken.parent, XmlTag::class.java)
-        if (currentText != null) {
-            currentTag = castOrNull(currentText.parent, XmlTag::class.java)
-        } else if (currentTag != null) {
-            val xmlTexts = extractXmlElement(currentTag, XmlText::class.java)
-            if (xmlTexts.size == 1) {
-                currentText = xmlTexts[0]
-            }
-        }
-        return if (currentText != null && currentTag != null) {
-            createPom(currentText, currentTag)
+        val (versionText, versionTag) = extractVersionTextAndTag(currentXmlToken)
+        return if (versionText != null && versionTag != null) {
+            createPom(versionText, versionTag)
         } else {
             null
+        }
+    }
+
+    private fun extractVersionTextAndTag(currentXmlToken: XmlToken): Pair<XmlText?, XmlTag?> {
+        val currentText = castOrNull(currentXmlToken.parent, XmlText::class.java)
+        val tag = castOrNull(currentText?.parent, XmlTag::class.java)
+        return if (currentText != null && tag != null) {
+            currentText to tag
+        } else {
+            val currentTag = castOrNull(currentXmlToken.parent, XmlTag::class.java)
+            val text = extractXmlElement(currentTag, XmlText::class.java).getOrNull(0)
+            text to currentTag
         }
     }
 
@@ -43,16 +49,22 @@ class PomFactory {
         val noAttributesForVersionTag = versionTag.attributes.isEmpty()
         val isVersionTag = XmlNodeName.VERSION.xmlName == versionTag.name
         val dependency = castOrNull(versionTag.parent, XmlTag::class.java)
-        var pom: Pom? = null
-        if (isVersionTag && noAttributesForVersionTag && dependency != null && !isVariable(version.text)) {
-            val project = findBack(dependency, XmlNodeName.PROJECT.xmlName)
-            val isDependencyTag = XmlNodeName.DEPENDENCY.xmlName == dependency.name
-            val noAttributesForDependencyTag = dependency.attributes.isEmpty()
-            if (project != null && isDependencyTag && noAttributesForDependencyTag) {
-                pom = createPom(project, dependency, version)
-            }
+        return if (isVersionTag && noAttributesForVersionTag && dependency != null && !isVariable(version.text)) {
+            createPom(dependency, version)
+        } else {
+            null
         }
-        return pom
+    }
+
+    private fun createPom(dependency: XmlTag, version: XmlText): Pom? {
+        val project = findBack(dependency, XmlNodeName.PROJECT.xmlName)
+        val isDependencyTag = XmlNodeName.DEPENDENCY.xmlName == dependency.name
+        val noAttributesForDependencyTag = dependency.attributes.isEmpty()
+        return if (project != null && isDependencyTag && noAttributesForDependencyTag) {
+            createPom(project, dependency, version)
+        } else {
+            null
+        }
     }
 
     private fun findBack(xmlTag: XmlTag, name: String): XmlTag? =
@@ -66,8 +78,7 @@ class PomFactory {
 
     private fun createPom(project: XmlTag, dependencyTag: XmlTag, versionText: XmlText) =
             createDependency(dependencyTag, versionText.text)?.let {
-                val xmlDependency = XmlDependency(it, versionText)
-                Pom(dependencyTag.namespace, project, xmlDependency)
+                Pom(dependencyTag.namespace, project, XmlDependency(it, versionText))
             }
 
     private fun createDependency(dependencyTag: XmlTag, version: String): Dependency? {
@@ -81,20 +92,14 @@ class PomFactory {
         }
     }
 
-    private fun <T : XmlElement> extractXmlElement(dependencyTag: XmlTag, clazz: Class<T>) =
-            dependencyTag.value.children
-                    .filter { clazz.isInstance(it) }
-                    .map { clazz.cast(it) }
+    private fun <T : XmlElement> extractXmlElement(dependencyTag: XmlTag?, clazz: Class<T>) =
+            dependencyTag?.value?.children
+                    ?.filter { clazz.isInstance(it) }
+                    ?.map { clazz.cast(it) }
+                    ?: emptyList()
 
-    private fun createDependency(version: String, groupIdTag: XmlTag, artifactIdTag: XmlTag): Dependency {
-        val groupId = groupIdTag.value.text
-        val artifactId = artifactIdTag.value.text
-        return Dependency(
-                groupId,
-                artifactId,
-                version
-        )
-    }
+    private fun createDependency(version: String, groupIdTag: XmlTag, artifactIdTag: XmlTag) =
+            Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
 
     private fun isVariable(version: String) =
             version.matches(Regex(VARIABLE))
