@@ -6,9 +6,9 @@ import domain.constant.XmlNodeName
 import org.apache.commons.lang3.StringUtils
 import provider.PropertiesProvider
 
-class PropertiesUpdater {
-    private val propertiesProvider = PropertiesProvider()
-
+class PropertiesUpdater(
+        private val propertiesProvider: PropertiesProvider = PropertiesProvider()
+) {
     fun addVersionToProperties(pom: Pom, freeVersion: String) {
         val properties = getPropertiesOrCreateIfMissing(pom.project)
         addProperty(properties, freeVersion, getVersion(pom), false)

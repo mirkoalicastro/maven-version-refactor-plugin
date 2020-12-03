@@ -8,12 +8,11 @@ import log.logger
 import provider.FreeVersionProvider
 import updater.PropertiesUpdater
 
-class VersionUpdatingFacade: Logging {
-
-    private val freeVersionProvider = FreeVersionProvider()
-    private val propertiesUpdater = PropertiesUpdater()
-    private val pomFactory = PomFactory()
-
+class VersionUpdatingFacade(
+        private val freeVersionProvider: FreeVersionProvider = FreeVersionProvider(),
+        private val propertiesUpdater: PropertiesUpdater = PropertiesUpdater(),
+        private val pomFactory: PomFactory = PomFactory()
+) : Logging {
     fun replaceVersion(psiElement: PsiElement) {
         val pom = pomFactory.create(psiElement)
         if (pom != null) {

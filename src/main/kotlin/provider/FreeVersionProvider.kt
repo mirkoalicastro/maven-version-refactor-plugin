@@ -3,14 +3,14 @@ package provider
 import com.intellij.psi.xml.XmlTag
 import domain.Dependency
 
-class FreeVersionProvider {
+class FreeVersionProvider(
+        private val propertiesProvider: PropertiesProvider = PropertiesProvider()
+) {
     companion object {
         private const val VERSION_SUFFIX = ".version"
         private const val DASH = '-'
         private const val MAX_ATTEMPTS = 20
     }
-
-    private val propertiesProvider = PropertiesProvider()
 
     fun getFreeVersion(project: XmlTag, dependency: Dependency): String? {
         val properties = propertiesProvider.provide(project)
@@ -48,5 +48,5 @@ class FreeVersionProvider {
             properties.children
                     .filter { XmlTag::class.java.isInstance(it) }
                     .map { XmlTag::class.java.cast(it) }
-                    .any { property.toLowerCase() == it.name.toLowerCase() }
+                    .any { property.equals(it.name, ignoreCase = true) }
 }

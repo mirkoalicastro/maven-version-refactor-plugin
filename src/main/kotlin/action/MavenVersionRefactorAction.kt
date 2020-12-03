@@ -22,8 +22,9 @@ class MavenVersionRefactorAction: PsiElementBaseIntentionAction(), IntentionActi
     override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) =
             versionUpdatingFacade.replaceVersion(psiElement)
 
-    override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement) =
-            pluginAvailabilityProvider.provide(psiElement)
+    override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement): Boolean {
+        return pluginAvailabilityProvider.provide(psiElement)
+    }
 
     override fun getText() = PLUGIN_TEXT
 
