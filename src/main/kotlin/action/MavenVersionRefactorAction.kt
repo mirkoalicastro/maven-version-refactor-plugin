@@ -3,7 +3,6 @@ package action
 import com.intellij.codeInsight.intention.HighPriorityAction
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
-import com.intellij.codeInspection.util.IntentionFamilyName
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -28,7 +27,5 @@ class MavenVersionRefactorAction: PsiElementBaseIntentionAction(), IntentionActi
 
     override fun getText() = PLUGIN_TEXT
 
-    override fun getFamilyName(): @IntentionFamilyName String {
-        return FAMILY_NAME
-    }
+    override fun getFamilyName() = FAMILY_NAME
 }

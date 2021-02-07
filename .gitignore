@@ -28,3 +28,7 @@ hs_err_pid*
 
 # directory for compiled files
 /out/
+
+.gradle
+.idea
+build

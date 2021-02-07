@@ -1,38 +1,34 @@
 <idea-plugin>
-  <id>com.mirkoalicastro.mavenversionrefactor</id>
-  <name>Maven Version Refactor</name>
-  <version>1.0.1</version>
-  <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
+    <id>com.mirkoalicastro.mavenversionrefactor</id>
+    <name>Maven Version Refactor</name>
+    <version>1.0.0</version>
+    <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
 
-  <!-- Text to display as description on Preferences/Settings | Plugin page -->
-  <description>
-    <![CDATA[
+    <!-- Text to display as description on Preferences/Settings | Plugin page -->
+    <description>
+        <![CDATA[
       Intention action that suggests extraction of a dependency version in a pom using a property.<br />
       Adds entry to <b>Preferences | Editor | Intentions | SDK Intentions<b>.<br />
       It is a high priority action, enabled when the cursor is on a non-variable dependency version (both on text and tag).
     ]]>
-  </description>
+    </description>
 
-  <change-notes>
-    <![CDATA[
+    <change-notes>
+        <![CDATA[
       <ul>
-        <li><b>1.0.1</b> First release of the IntelliJ plugin.</li>
+        <li><b>1.0.0</b> First release of the IntelliJ plugin.</li>
       </ul>
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="173.0"/>
+    <!-- Product and plugin compatibility requirements -->
+    <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
 
-  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <depends>com.intellij.modules.platform</depends>
-
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-    <intentionAction order="first">
-      <className>action.MavenVersionRefactorAction</className>
-    </intentionAction>
-  </extensions>
-
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <intentionAction order="first">
+            <className>action.MavenVersionRefactorAction</className>
+        </intentionAction>
+    </extensions>
 </idea-plugin>
