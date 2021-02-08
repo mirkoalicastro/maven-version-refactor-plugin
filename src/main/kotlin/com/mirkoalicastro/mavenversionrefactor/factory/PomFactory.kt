@@ -68,18 +68,18 @@ class PomFactory {
     }
 
     private fun findBack(xmlTag: XmlTag, name: String): XmlTag? =
-            castOrNull(xmlTag.parent, XmlTag::class.java)?.let {
-                if (name == it.name) {
-                    it
-                } else {
-                    findBack(it, name)
-                }
+        castOrNull(xmlTag.parent, XmlTag::class.java)?.let {
+            if (name == it.name) {
+                it
+            } else {
+                findBack(it, name)
             }
+        }
 
     private fun createPom(project: XmlTag, dependencyTag: XmlTag, versionText: XmlText) =
-            createDependency(dependencyTag, versionText.text)?.let {
-                Pom(dependencyTag.namespace, project, XmlDependency(it, versionText))
-            }
+        createDependency(dependencyTag, versionText.text)?.let {
+            Pom(dependencyTag.namespace, project, XmlDependency(it, versionText))
+        }
 
     private fun createDependency(dependencyTag: XmlTag, version: String): Dependency? {
         val xmlTagChildren = extractXmlElement(dependencyTag, XmlTag::class.java)
@@ -93,24 +93,24 @@ class PomFactory {
     }
 
     private fun <T : XmlElement> extractXmlElement(dependencyTag: XmlTag?, clazz: Class<T>) =
-            dependencyTag?.value?.children
-                    ?.filter { clazz.isInstance(it) }
-                    ?.map { clazz.cast(it) }
-                    ?: emptyList()
+        dependencyTag?.value?.children
+            ?.filter { clazz.isInstance(it) }
+            ?.map { clazz.cast(it) }
+            ?: emptyList()
 
     private fun createDependency(version: String, groupIdTag: XmlTag, artifactIdTag: XmlTag) =
-            Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
+        Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
 
     private fun isVariable(version: String) =
-            version.matches(Regex(VARIABLE))
+        version.matches(Regex(VARIABLE))
 
     private fun extractXmlTagByName(xmlTagChildren: List<XmlTag>, name: String) =
-            xmlTagChildren.firstOrNull { name == it.name }
+        xmlTagChildren.firstOrNull { name == it.name }
 
     private fun <T, S : T?> castOrNull(el: T?, clazz: Class<S>?) =
-            if (el != null && clazz != null && clazz.isAssignableFrom(el.javaClass)) {
-                clazz.cast(el)
-            } else {
-                null
-            }
+        if (el != null && clazz != null && clazz.isAssignableFrom(el.javaClass)) {
+            clazz.cast(el)
+        } else {
+            null
+        }
 }

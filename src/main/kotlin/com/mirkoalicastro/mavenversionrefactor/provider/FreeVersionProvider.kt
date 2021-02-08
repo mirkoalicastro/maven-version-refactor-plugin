@@ -4,7 +4,7 @@ import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
 
 class FreeVersionProvider(
-        private val propertiesProvider: PropertiesProvider = PropertiesProvider()
+    private val propertiesProvider: PropertiesProvider = PropertiesProvider()
 ) {
     companion object {
         private const val VERSION_SUFFIX = ".version"
@@ -33,20 +33,20 @@ class FreeVersionProvider(
     }
 
     private fun fallbackWithFullNameAndAttempt(properties: XmlTag, prefix: String, attempt: Int): String? =
-            if (attempt < MAX_ATTEMPTS) {
-                val candidate = prefix + (attempt+1) + VERSION_SUFFIX
-                if (!isPropertyInUse(properties, candidate)) {
-                    candidate
-                } else {
-                    fallbackWithFullNameAndAttempt(properties, prefix, attempt+1)
-                }
+        if (attempt < MAX_ATTEMPTS) {
+            val candidate = prefix + (attempt + 1) + VERSION_SUFFIX
+            if (!isPropertyInUse(properties, candidate)) {
+                candidate
             } else {
-                null
+                fallbackWithFullNameAndAttempt(properties, prefix, attempt + 1)
             }
+        } else {
+            null
+        }
 
     private fun isPropertyInUse(properties: XmlTag, property: String) =
-            properties.children
-                    .filter { XmlTag::class.java.isInstance(it) }
-                    .map { XmlTag::class.java.cast(it) }
-                    .any { property.equals(it.name, ignoreCase = true) }
+        properties.children
+            .filter { XmlTag::class.java.isInstance(it) }
+            .map { XmlTag::class.java.cast(it) }
+            .any { property.equals(it.name, ignoreCase = true) }
 }

@@ -9,7 +9,7 @@ class PropertiesProvider {
     fun provide(project: XmlTag?) = project?.children?.extractProperties()
 
     private fun Array<PsiElement>.extractProperties() =
-            filter { XmlTag::class.java.isInstance(it) }
-                    .map { XmlTag::class.java.cast(it) }
-                    .firstOrNull { PROPERTIES.xmlName == it.name.toLowerCase() }
+        filter { XmlTag::class.java.isInstance(it) }
+            .map { XmlTag::class.java.cast(it) }
+            .firstOrNull { PROPERTIES.xmlName == it.name.toLowerCase() }
 }

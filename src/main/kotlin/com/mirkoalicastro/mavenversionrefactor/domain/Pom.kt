@@ -8,5 +8,4 @@ data class Pom(val namespace: String, val project: XmlTag, val xmlDependency: Xm
     }
 
     fun hasValidNamespace() = namespace.matches(Regex(MAVEN_NAMESPACE))
-
 }
