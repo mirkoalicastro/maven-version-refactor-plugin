@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mirkoalicastro.mavenversionrefactor</id>
     <name>Maven Version Refactor</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
 
     <!-- Text to display as description on Preferences/Settings | Plugin page -->
@@ -17,6 +17,7 @@
     <change-notes>
         <![CDATA[
       <ul>
+        <li><b>1.0.1</b> Documentation improvements.</li>
         <li><b>1.0.0</b> First release of the IntelliJ plugin.</li>
       </ul>
     ]]>
