@@ -1,4 +1,4 @@
-package domain.constant
+package com.mirkoalicastro.mavenversionrefactor.domain.constant
 
 enum class XmlNodeName(val xmlName: String) {
     PROPERTIES("properties"), DEPENDENCY("dependency"), VERSION("version"),

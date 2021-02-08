@@ -1,7 +1,7 @@
-package provider
+package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.PsiElement
-import factory.PomFactory
+import com.mirkoalicastro.mavenversionrefactor.factory.PomFactory
 
 class PluginAvailabilityProvider(
         private val pomFactory: PomFactory = PomFactory(),

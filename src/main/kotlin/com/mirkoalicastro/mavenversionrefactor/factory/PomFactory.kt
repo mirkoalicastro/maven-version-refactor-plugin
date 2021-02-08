@@ -1,14 +1,14 @@
-package factory
+package com.mirkoalicastro.mavenversionrefactor.factory
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlElement
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlText
 import com.intellij.psi.xml.XmlToken
-import domain.Dependency
-import domain.Pom
-import domain.XmlDependency
-import domain.constant.XmlNodeName
+import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
+import com.mirkoalicastro.mavenversionrefactor.domain.Pom
+import com.mirkoalicastro.mavenversionrefactor.domain.XmlDependency
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName
 
 class PomFactory {
     companion object {

@@ -1,4 +1,4 @@
-package domain
+package com.mirkoalicastro.mavenversionrefactor.domain
 
 import com.intellij.psi.xml.XmlTag
 

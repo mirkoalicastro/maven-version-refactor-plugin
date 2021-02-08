@@ -1,4 +1,4 @@
-package action
+package com.mirkoalicastro.mavenversionrefactor.action
 
 import com.intellij.codeInsight.intention.HighPriorityAction
 import com.intellij.codeInsight.intention.IntentionAction
@@ -6,8 +6,8 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import facade.VersionUpdatingFacade
-import provider.PluginAvailabilityProvider
+import com.mirkoalicastro.mavenversionrefactor.facade.VersionUpdatingFacade
+import com.mirkoalicastro.mavenversionrefactor.provider.PluginAvailabilityProvider
 
 class MavenVersionRefactorAction: PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
     companion object {

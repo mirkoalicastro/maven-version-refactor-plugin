@@ -1,8 +1,8 @@
-package provider
+package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlTag
-import domain.constant.XmlNodeName.PROPERTIES
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.PROPERTIES
 
 class PropertiesProvider {
 

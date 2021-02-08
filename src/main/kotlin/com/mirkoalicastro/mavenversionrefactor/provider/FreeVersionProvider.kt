@@ -1,7 +1,7 @@
-package provider
+package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
-import domain.Dependency
+import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
 
 class FreeVersionProvider(
         private val propertiesProvider: PropertiesProvider = PropertiesProvider()

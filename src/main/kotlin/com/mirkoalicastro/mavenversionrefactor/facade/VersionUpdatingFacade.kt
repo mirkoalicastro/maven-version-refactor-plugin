@@ -1,12 +1,12 @@
-package facade
+package com.mirkoalicastro.mavenversionrefactor.facade
 
 import com.intellij.psi.PsiElement
-import domain.Pom
-import factory.PomFactory
-import log.Logging
-import log.logger
-import provider.FreeVersionProvider
-import updater.PropertiesUpdater
+import com.mirkoalicastro.mavenversionrefactor.domain.Pom
+import com.mirkoalicastro.mavenversionrefactor.factory.PomFactory
+import com.mirkoalicastro.mavenversionrefactor.log.Logging
+import com.mirkoalicastro.mavenversionrefactor.log.logger
+import com.mirkoalicastro.mavenversionrefactor.provider.FreeVersionProvider
+import com.mirkoalicastro.mavenversionrefactor.updater.PropertiesUpdater
 
 class VersionUpdatingFacade(
         private val freeVersionProvider: FreeVersionProvider = FreeVersionProvider(),

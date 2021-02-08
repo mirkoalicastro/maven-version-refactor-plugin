@@ -1,10 +1,10 @@
-package updater
+package com.mirkoalicastro.mavenversionrefactor.updater
 
 import com.intellij.psi.xml.XmlTag
-import domain.Pom
-import domain.constant.XmlNodeName
+import com.mirkoalicastro.mavenversionrefactor.domain.Pom
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName
 import org.apache.commons.lang3.StringUtils
-import provider.PropertiesProvider
+import com.mirkoalicastro.mavenversionrefactor.provider.PropertiesProvider
 
 class PropertiesUpdater(
         private val propertiesProvider: PropertiesProvider = PropertiesProvider()
