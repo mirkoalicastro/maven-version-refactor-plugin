@@ -7,9 +7,10 @@
     <!-- Text to display as description on Preferences/Settings | Plugin page -->
     <description>
         <![CDATA[
-      Intention action that suggests extraction of a dependency version in a pom using a property.<br />
+      <p>Intention action that suggests extraction of a dependency version in a pom using a property.<br />
       Adds entry to <b>Preferences | Editor | Intentions | SDK Intentions<b>.<br />
-      It is a high priority action, enabled when the cursor is on a non-variable dependency version (both on text and tag).
+      It is a high priority action, enabled when the cursor is on a non-variable dependency version (both on text and tag).</p>
+      <p>Have a look at and contribute to the GitHub <a href="https://github.com/mirkoalicastro/maven-version-refactor-plugin">repo</a>.</p>
     ]]>
     </description>
 
@@ -28,7 +29,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <intentionAction order="first">
-            <className>action.MavenVersionRefactorAction</className>
+            <className>com.mirkoalicastro.mavenversionrefactor.action.MavenVersionRefactorAction</className>
         </intentionAction>
     </extensions>
 </idea-plugin>

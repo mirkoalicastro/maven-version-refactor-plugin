@@ -1,13 +1,13 @@
-package updater
+package com.mirkoalicastro.mavenversionrefactor.updater
 
 import com.intellij.psi.xml.XmlTag
-import domain.Pom
-import domain.constant.XmlNodeName
+import com.mirkoalicastro.mavenversionrefactor.domain.Pom
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName
+import com.mirkoalicastro.mavenversionrefactor.provider.PropertiesProvider
 import org.apache.commons.lang3.StringUtils
-import provider.PropertiesProvider
 
 class PropertiesUpdater(
-        private val propertiesProvider: PropertiesProvider = PropertiesProvider()
+    private val propertiesProvider: PropertiesProvider = PropertiesProvider()
 ) {
     fun addVersionToProperties(pom: Pom, freeVersion: String) {
         val properties = getPropertiesOrCreateIfMissing(pom.project)
@@ -15,10 +15,10 @@ class PropertiesUpdater(
     }
 
     private fun getPropertiesOrCreateIfMissing(project: XmlTag) =
-            propertiesProvider.provide(project) ?: createProperties(project)
+        propertiesProvider.provide(project) ?: createProperties(project)
 
     private fun getVersion(pom: Pom) =
-            pom.xmlDependency.dependency.version
+        pom.xmlDependency.dependency.version
 
     private fun createProperties(project: XmlTag): XmlTag {
         addProperty(project, XmlNodeName.PROPERTIES.xmlName, StringUtils.EMPTY, true)
