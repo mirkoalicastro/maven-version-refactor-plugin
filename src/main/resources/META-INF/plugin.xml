@@ -7,9 +7,9 @@
     <!-- Text to display as description on Preferences/Settings | Plugin page -->
     <description>
         <![CDATA[
-      Intention com.mirkoalicastro.mavenversionrefactor.action that suggests extraction of a dependency version in a pom using a property.<br />
+      Intention action that suggests extraction of a dependency version in a pom using a property.<br />
       Adds entry to <b>Preferences | Editor | Intentions | SDK Intentions<b>.<br />
-      It is a high priority com.mirkoalicastro.mavenversionrefactor.action, enabled when the cursor is on a non-variable dependency version (both on text and tag).
+      It is a high priority action, enabled when the cursor is on a non-variable dependency version (both on text and tag).
     ]]>
     </description>
 
