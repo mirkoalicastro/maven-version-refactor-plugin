@@ -1,4 +1,9 @@
-# maven-artifacts-version-refactor
+# Maven Version Refactor Plugin
+
+![Version](https://img.shields.io/jetbrains/plugin/v/com.mirkoalicastro.mavenversionrefactor
+)
+
+## Description
 
 <!-- Plugin description -->
 This IntelliJ plugin adds an intention action that suggests extraction of a dependency version in a pom using a property.
@@ -24,5 +29,9 @@ Have a look at and contribute to the GitHub [repo](https://github.com/mirkoalica
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
+
+## External resources
+
+[Here](https://plugins.jetbrains.com/plugin/16057-maven-version-refactor) the link to the plugin homepage.
 
 [template]: https://github.com/JetBrains/intellij-platform-plugin-template
