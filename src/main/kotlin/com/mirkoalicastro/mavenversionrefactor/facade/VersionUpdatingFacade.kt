@@ -13,20 +13,15 @@ class VersionUpdatingFacade(
     private val propertiesUpdater: PropertiesUpdater = PropertiesUpdater(),
     private val pomFactory: PomFactory = PomFactory()
 ) : Logging {
-    fun replaceVersion(psiElement: PsiElement) {
-        val pom = pomFactory.create(psiElement)
-        if (pom != null) {
-            doExecute(pom)
-        } else {
-            logger().error("Unexpected error on {}", psiElement)
-        }
-    }
+    fun replaceVersion(psiElement: PsiElement) = pomFactory.create(psiElement)?.let {
+        doExecute(it)
+    } ?: logger().error("Unexpected error on {}", psiElement)
 
     private fun doExecute(pom: Pom) =
         getFreeVersion(pom)?.let {
             replaceVersionWithVariable(pom, it)
             addVersionInProperties(pom, it)
-        } ?: logger().error("Unexpected error: cannot retrieve a free version starting from pom {}", pom)
+        } ?: logger().error("Unexpected error: cannot retrieve a free version starting from POM {}", pom)
 
     private fun addVersionInProperties(pom: Pom, freeVersion: String) =
         propertiesUpdater.addVersionToProperties(pom, freeVersion)
