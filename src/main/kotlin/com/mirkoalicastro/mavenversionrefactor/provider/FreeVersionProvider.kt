@@ -2,6 +2,7 @@ package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
+import com.sun.xml.fastinfoset.org.apache.xerces.util.XMLChar
 
 class FreeVersionProvider(
     private val propertiesProvider: PropertiesProvider = PropertiesProvider()
@@ -9,13 +10,14 @@ class FreeVersionProvider(
     companion object {
         private const val VERSION_SUFFIX = ".version"
         private const val DASH = '-'
-        private const val MAX_ATTEMPTS = 20
+        private const val NORMALIZED_PREFIX = 'x'
+        private const val MAX_ATTEMPTS = 5
     }
 
     fun getFreeVersion(project: XmlTag, dependency: Dependency): String? {
         val properties = propertiesProvider.provide(project)
-        val candidate = dependency.artifactId + VERSION_SUFFIX
-        return if (properties == null || !isPropertyInUse(properties, candidate)) {
+        val candidate = normalize(dependency.artifactId + VERSION_SUFFIX)
+        return if (properties == null || isPropertyAvailable(properties, candidate)) {
             candidate
         } else {
             fallbackWithFullName(properties, dependency)
@@ -23,8 +25,8 @@ class FreeVersionProvider(
     }
 
     private fun fallbackWithFullName(properties: XmlTag, dependency: Dependency): String? {
-        val candidate = dependency.groupId + DASH + dependency.artifactId + VERSION_SUFFIX
-        return if (!isPropertyInUse(properties, candidate)) {
+        val candidate = normalize(dependency.groupId + DASH + dependency.artifactId + VERSION_SUFFIX)
+        return if (isPropertyAvailable(properties, candidate)) {
             candidate
         } else {
             val prefix = dependency.groupId + DASH + dependency.artifactId + DASH
@@ -34,8 +36,8 @@ class FreeVersionProvider(
 
     private fun fallbackWithFullNameAndAttempt(properties: XmlTag, prefix: String, attempt: Int): String? =
         if (attempt < MAX_ATTEMPTS) {
-            val candidate = prefix + (attempt + 1) + VERSION_SUFFIX
-            if (!isPropertyInUse(properties, candidate)) {
+            val candidate = normalize(prefix + (attempt + 1) + VERSION_SUFFIX)
+            if (isPropertyAvailable(properties, candidate)) {
                 candidate
             } else {
                 fallbackWithFullNameAndAttempt(properties, prefix, attempt + 1)
@@ -44,9 +46,16 @@ class FreeVersionProvider(
             null
         }
 
-    private fun isPropertyInUse(properties: XmlTag, property: String) =
+    private fun isPropertyAvailable(properties: XmlTag, property: String) = isValidProperty(property) &&
         properties.children
             .filter { XmlTag::class.java.isInstance(it) }
             .map { XmlTag::class.java.cast(it) }
-            .any { property.equals(it.name, ignoreCase = true) }
+            .none { property.equals(it.name, ignoreCase = true) }
+
+    private fun normalize(property: String) = if (isValidProperty(property))
+        property
+    else
+        NORMALIZED_PREFIX + property
+
+    private fun isValidProperty(property: String) = XMLChar.isValidName(property)
 }

@@ -8,21 +8,27 @@ import com.intellij.psi.xml.XmlToken
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
 import com.mirkoalicastro.mavenversionrefactor.domain.Pom
 import com.mirkoalicastro.mavenversionrefactor.domain.XmlDependency
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.ARTIFACT_ID
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.DEPENDENCY
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.GROUP_ID
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.PLUGIN
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.PROJECT
+import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.VERSION
 
 class PomFactory {
     companion object {
-        private const val VARIABLE = "^\\s*\\$\\s*\\{.+}\\s*$"
+        private const val POM_VARIABLE_PATTERN = "^\\s*\\$\\s*\\{.+}\\s*$"
+        private const val POM_FILE_NAME = "pom.xml"
     }
 
-    fun create(currentPsiElement: PsiElement): Pom? {
-        val currentXmlToken = castOrNull(currentPsiElement, XmlToken::class.java)
-        return if (currentXmlToken != null) {
-            create(currentXmlToken)
-        } else {
+    fun create(currentPsiElement: PsiElement) =
+        getXmlTokenForPom(currentPsiElement)?.let { create(it) }
+
+    private fun getXmlTokenForPom(psiElement: PsiElement) =
+        if (psiElement.containingFile.name.equals(POM_FILE_NAME, ignoreCase = true))
+            castOrNull(psiElement, XmlToken::class.java)
+        else
             null
-        }
-    }
 
     private fun create(currentXmlToken: XmlToken): Pom? {
         val (versionText, versionTag) = extractVersionTextAndTag(currentXmlToken)
@@ -46,10 +52,9 @@ class PomFactory {
     }
 
     private fun createPom(version: XmlText, versionTag: XmlTag): Pom? {
-        val noAttributesForVersionTag = versionTag.attributes.isEmpty()
-        val isVersionTag = XmlNodeName.VERSION.xmlName == versionTag.name
+        val isVersionTag = VERSION.xmlName == versionTag.name
         val dependency = castOrNull(versionTag.parent, XmlTag::class.java)
-        return if (isVersionTag && noAttributesForVersionTag && dependency != null && !isVariable(version.text)) {
+        return if (isVersionTag && dependency != null && !isVariable(version.text)) {
             createPom(dependency, version)
         } else {
             null
@@ -57,10 +62,8 @@ class PomFactory {
     }
 
     private fun createPom(dependency: XmlTag, version: XmlText): Pom? {
-        val project = findBack(dependency, XmlNodeName.PROJECT.xmlName)
-        val isDependencyTag = XmlNodeName.DEPENDENCY.xmlName == dependency.name
-        val noAttributesForDependencyTag = dependency.attributes.isEmpty()
-        return if (project != null && isDependencyTag && noAttributesForDependencyTag) {
+        val project = findBack(dependency, PROJECT.xmlName)
+        return if (project != null && (dependency.name == DEPENDENCY.xmlName || dependency.name == PLUGIN.xmlName)) {
             createPom(project, dependency, version)
         } else {
             null
@@ -83,8 +86,8 @@ class PomFactory {
 
     private fun createDependency(dependencyTag: XmlTag, version: String): Dependency? {
         val xmlTagChildren = extractXmlElement(dependencyTag, XmlTag::class.java)
-        val groupIdTag = extractXmlTagByName(xmlTagChildren, XmlNodeName.GROUP_ID.xmlName)
-        val artifactIdTag = extractXmlTagByName(xmlTagChildren, XmlNodeName.ARTIFACT_ID.xmlName)
+        val groupIdTag = extractXmlTagByName(xmlTagChildren, GROUP_ID.xmlName)
+        val artifactIdTag = extractXmlTagByName(xmlTagChildren, ARTIFACT_ID.xmlName)
         return if (groupIdTag != null && artifactIdTag != null) {
             createDependency(version, groupIdTag, artifactIdTag)
         } else {
@@ -102,7 +105,7 @@ class PomFactory {
         Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
 
     private fun isVariable(version: String) =
-        version.matches(Regex(VARIABLE))
+        version.matches(Regex(POM_VARIABLE_PATTERN))
 
     private fun extractXmlTagByName(xmlTagChildren: List<XmlTag>, name: String) =
         xmlTagChildren.firstOrNull { name == it.name }

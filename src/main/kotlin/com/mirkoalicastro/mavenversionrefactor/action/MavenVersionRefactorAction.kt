@@ -9,14 +9,14 @@ import com.intellij.psi.PsiElement
 import com.mirkoalicastro.mavenversionrefactor.facade.VersionUpdatingFacade
 import com.mirkoalicastro.mavenversionrefactor.provider.PluginAvailabilityProvider
 
-class MavenVersionRefactorAction : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
+class MavenVersionRefactorAction(
+    private val versionUpdatingFacade: VersionUpdatingFacade = VersionUpdatingFacade(),
+    private val pluginAvailabilityProvider: PluginAvailabilityProvider = PluginAvailabilityProvider()
+) : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
     companion object {
         private const val PLUGIN_TEXT = "Refactor version as property"
         private const val FAMILY_NAME = "Maven Version Refactor"
     }
-
-    private val versionUpdatingFacade = VersionUpdatingFacade()
-    private val pluginAvailabilityProvider = PluginAvailabilityProvider()
 
     override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) =
         versionUpdatingFacade.replaceVersion(psiElement)
