@@ -47,7 +47,7 @@ class FreeVersionProvider(
         }
 
     private fun isPropertyAvailable(properties: XmlTag, property: String) = isValidProperty(property) &&
-            properties.children
+        properties.children
             .filter { XmlTag::class.java.isInstance(it) }
             .map { XmlTag::class.java.cast(it) }
             .none { property.equals(it.name, ignoreCase = true) }
