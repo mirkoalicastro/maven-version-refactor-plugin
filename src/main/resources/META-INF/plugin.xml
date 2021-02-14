@@ -4,26 +4,6 @@
     <version>1.0.2</version>
     <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
 
-    <!-- Text to display as description on Preferences/Settings | Plugin page -->
-    <description>
-        <![CDATA[
-      <p>Intention action that suggests extraction of a dependency/plugin version in a POM using a property.<br />
-      Adds entry to <b>Preferences | Editor | Intentions | SDK Intentions<b>.<br />
-      It is a high priority action, enabled when the cursor is on a non-variable dependency/plugin version (both on text and tag).</p>
-      <p>Have a look at and contribute to the GitHub <a href="https://github.com/mirkoalicastro/maven-version-refactor-plugin">repo</a>.</p>
-    ]]>
-    </description>
-
-    <change-notes>
-        <![CDATA[
-      <ul>
-        <li><b>1.0.2</b> Added support for plugins versions and made the plugin faster</li>
-        <li><b>1.0.1</b> Documentation improvements.</li>
-        <li><b>1.0.0</b> First release of the IntelliJ plugin.</li>
-      </ul>
-    ]]>
-    </change-notes>
-
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
