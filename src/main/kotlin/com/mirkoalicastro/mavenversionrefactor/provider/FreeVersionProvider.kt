@@ -2,15 +2,15 @@ package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
-import com.sun.xml.fastinfoset.org.apache.xerces.util.XMLChar
+import org.apache.xerces.util.XMLChar
 
 class FreeVersionProvider(
     private val propertiesProvider: PropertiesProvider = PropertiesProvider()
 ) {
     companion object {
         private const val VERSION_SUFFIX = ".version"
+        private const val NORMALIZED_PREFIX = "dependency."
         private const val DASH = '-'
-        private const val NORMALIZED_PREFIX = 'x'
         private const val MAX_ATTEMPTS = 5
     }
 
@@ -52,10 +52,11 @@ class FreeVersionProvider(
             .map { XmlTag::class.java.cast(it) }
             .none { property.equals(it.name, ignoreCase = true) }
 
-    private fun normalize(property: String) = if (isValidProperty(property))
+    private fun normalize(property: String) = if (isValidProperty(property)) {
         property
-    else
+    } else {
         NORMALIZED_PREFIX + property
+    }
 
     private fun isValidProperty(property: String) = XMLChar.isValidName(property)
 }
