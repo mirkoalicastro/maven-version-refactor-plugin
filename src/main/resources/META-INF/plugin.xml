@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mirkoalicastro.mavenversionrefactor</id>
     <name>Maven Version Refactor</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
 
     <!-- Product and plugin compatibility requirements -->
