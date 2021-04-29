@@ -21,7 +21,7 @@ Have a look at and contribute to the GitHub [repo](https://github.com/mirkoalica
 
 - Using IDE built-in plugin system:
   
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "maven-artifacts-version-refactor"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Maven Version Refactor"</kbd> >
   <kbd>Install Plugin</kbd>
   
 - Manually:
