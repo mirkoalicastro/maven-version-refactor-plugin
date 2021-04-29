@@ -29,11 +29,11 @@ Have a look at and contribute to the GitHub [repo](https://github.com/mirkoalica
   Download the latest release and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
----
-Plugin based on the [IntelliJ Platform Plugin Template][template].
-
 ## External resources
 
 [Here](https://plugins.jetbrains.com/plugin/16057-maven-version-refactor) the link to the plugin homepage.
+
+---
+Plugin based on the [IntelliJ Platform Plugin Template][template].
 
 [template]: https://github.com/JetBrains/intellij-platform-plugin-template
