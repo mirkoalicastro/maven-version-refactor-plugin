@@ -43,6 +43,8 @@ repositories {
 }
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+    testImplementation("io.kotest:kotest-runner-junit5:4.4.3")
+    testImplementation("io.mockk:mockk:1.11.0")
 }
 
 // Configure gradle-intellij-plugin plugin.
@@ -83,6 +85,15 @@ tasks {
 
     withType<Detekt> {
         jvmTarget = "1.8"
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy("jacocoTestReport")
+        doLast {
+            println("View code coverage at:")
+            println("file://$buildDir/reports/jacoco/test/html/index.html")
+        }
     }
 
     patchPluginXml {
