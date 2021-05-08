@@ -6,26 +6,33 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.mirkoalicastro.mavenversionrefactor.facade.VersionUpdatingFacade
-import com.mirkoalicastro.mavenversionrefactor.provider.PluginAvailabilityProvider
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.PomXmlAware
+import com.mirkoalicastro.mavenversionrefactor.factory.PomFactory
+import com.mirkoalicastro.mavenversionrefactor.provider.FreeVersionProvider
+import com.mirkoalicastro.mavenversionrefactor.updater.PropertiesUpdater
 
 class MavenVersionRefactorAction(
-    private val versionUpdatingFacade: VersionUpdatingFacade = VersionUpdatingFacade(),
-    private val pluginAvailabilityProvider: PluginAvailabilityProvider = PluginAvailabilityProvider()
+    private val propertiesUpdater: PropertiesUpdater = PropertiesUpdater(),
+    private val freeVersionProvider: FreeVersionProvider = FreeVersionProvider(),
+    private val pomFactory: PomFactory = PomFactory()
 ) : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
-    companion object {
-        private const val PLUGIN_TEXT = "Refactor version as property"
-        private const val FAMILY_NAME = "Maven Version Refactor"
+
+    override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) {
+        val pom = pomFactory.create(psiElement)
+        val version = pom?.getFreeVersion()
+
+        if (version != null) {
+            propertiesUpdater.addVersion(pom, version)
+        }
     }
 
-    override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) =
-        versionUpdatingFacade.replaceVersion(psiElement)
+    override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement) =
+        pomFactory.create(psiElement)?.getFreeVersion() != null
 
-    override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement): Boolean {
-        return pluginAvailabilityProvider.provide(psiElement)
-    }
+    override fun getText() = "Refactor version as property"
 
-    override fun getText() = PLUGIN_TEXT
+    override fun getFamilyName() = "Maven Version Refactor"
 
-    override fun getFamilyName() = FAMILY_NAME
+    private fun PomXmlAware.getFreeVersion() =
+        freeVersionProvider.getFreeVersion(project, dependencyXmlAware.dependency)
 }

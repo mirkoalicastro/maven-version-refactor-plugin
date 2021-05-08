@@ -1,108 +1,42 @@
 package com.mirkoalicastro.mavenversionrefactor.factory
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.xml.XmlElement
 import com.intellij.psi.xml.XmlTag
-import com.intellij.psi.xml.XmlText
-import com.intellij.psi.xml.XmlToken
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
-import com.mirkoalicastro.mavenversionrefactor.domain.Pom
-import com.mirkoalicastro.mavenversionrefactor.domain.XmlDependency
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.ARTIFACT_ID
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.DEPENDENCY
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.GROUP_ID
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.PLUGIN
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.PROJECT
-import com.mirkoalicastro.mavenversionrefactor.domain.constant.XmlNodeName.VERSION
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.PomXmlAware
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.DependencyXmlAware
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.ARTIFACT_ID
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.DEPENDENCY
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.GROUP_ID
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.PLUGIN
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.PROJECT
+import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.VERSION
+import com.mirkoalicastro.mavenversionrefactor.xml.findBack
+import com.mirkoalicastro.mavenversionrefactor.xml.getTag
+import com.mirkoalicastro.mavenversionrefactor.xml.getTags
+
+private val variableRegex = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
 
 class PomFactory {
-    companion object {
-        private const val POM_VARIABLE_PATTERN = "^\\s*\\$\\s*\\{.+}\\s*$"
-        private const val POM_FILE_NAME = "pom.xml"
-    }
+    fun create(element: PsiElement): PomXmlAware? {
+        if (isPomFile(element)) {
+            val children = element.findBack(DEPENDENCY.xmlName, PLUGIN.xmlName)?.getTags()
+            val groupId = children?.getTag(GROUP_ID.xmlName)
+            val artifactId = children?.getTag(ARTIFACT_ID.xmlName)
+            val version = children?.getTag(VERSION.xmlName)
+            val versionText = version?.value?.textElements?.getOrNull(0)
 
-    fun create(currentPsiElement: PsiElement) =
-        if (currentPsiElement.containingFile.name.equals(POM_FILE_NAME, ignoreCase = true)) {
-            castOrNull(currentPsiElement, XmlToken::class.java)?.let { create(it) }
-        } else {
-            null
-        }
-
-    private fun create(currentXmlToken: XmlToken): Pom? {
-        val (versionText, versionTag) = extractVersionTextAndTag(currentXmlToken)
-        return if (versionText != null && versionTag != null) {
-            createPom(versionText, versionTag)
-        } else {
-            null
-        }
-    }
-
-    private fun extractVersionTextAndTag(currentXmlToken: XmlToken): Pair<XmlText?, XmlTag?> {
-        val currentText = castOrNull(currentXmlToken.parent, XmlText::class.java)
-        val tag = castOrNull(currentText?.parent, XmlTag::class.java)
-        return if (currentText != null && tag != null) {
-            currentText to tag
-        } else {
-            val currentTag = castOrNull(currentXmlToken.parent, XmlTag::class.java)
-            val text = extractXmlElement(currentTag, XmlText::class.java).getOrNull(0)
-            text to currentTag
-        }
-    }
-
-    private fun createPom(version: XmlText, versionTag: XmlTag): Pom? {
-        val isVersionTag = VERSION.xmlName == versionTag.name
-        val dependency = castOrNull(versionTag.parent, XmlTag::class.java)
-        return if (isVersionTag && dependency != null && !version.text.matches(Regex(POM_VARIABLE_PATTERN))) {
-            createPom(dependency, version)
-        } else {
-            null
-        }
-    }
-
-    private fun createPom(dependency: XmlTag, version: XmlText): Pom? {
-        val project = findBack(dependency, PROJECT.xmlName)
-        return if (project != null && (dependency.name == DEPENDENCY.xmlName || dependency.name == PLUGIN.xmlName)) {
-            createDependency(dependency, version.text)?.let {
-                Pom(project, XmlDependency(it, version))
-            }
-        } else {
-            null
-        }
-    }
-
-    private fun findBack(xmlTag: XmlTag, name: String): XmlTag? =
-        castOrNull(xmlTag.parent, XmlTag::class.java)?.let {
-            if (name == it.name) {
-                it
-            } else {
-                findBack(it, name)
+            if (groupId != null && artifactId != null && version != null && versionText != null && isNotVar(version)) {
+                return element.findBack(PROJECT.xmlName)?.let {
+                    val dependency = Dependency(groupId.value.text, artifactId.value.text, version.value.text)
+                    PomXmlAware(it, DependencyXmlAware(dependency, versionText))
+                }
             }
         }
-
-    private fun createDependency(dependencyTag: XmlTag, version: String): Dependency? {
-        val xmlTagChildren = extractXmlElement(dependencyTag, XmlTag::class.java)
-        val groupIdTag = extractXmlTagByName(xmlTagChildren, GROUP_ID.xmlName)
-        val artifactIdTag = extractXmlTagByName(xmlTagChildren, ARTIFACT_ID.xmlName)
-        return if (groupIdTag != null && artifactIdTag != null) {
-            Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
-        } else {
-            null
-        }
+        return null
     }
 
-    private fun <T : XmlElement> extractXmlElement(dependencyTag: XmlTag?, clazz: Class<T>) =
-        dependencyTag?.value?.children
-            ?.filter { clazz.isInstance(it) }
-            ?.map { clazz.cast(it) }
-            ?: emptyList()
+    private fun isNotVar(tag: XmlTag) = !tag.value.text.matches(variableRegex)
 
-    private fun extractXmlTagByName(xmlTagChildren: List<XmlTag>, name: String) =
-        xmlTagChildren.firstOrNull { name == it.name }
-
-    private fun <T, S : T?> castOrNull(el: T?, clazz: Class<S>?) =
-        if (el != null && clazz != null && clazz.isAssignableFrom(el.javaClass)) {
-            clazz.cast(el)
-        } else {
-            null
-        }
+    private fun isPomFile(element: PsiElement) = element.containingFile.name.equals("pom.xml", ignoreCase = true)
 }
