@@ -7,57 +7,41 @@ import com.mirkoalicastro.mavenversionrefactor.xml.getTag
 import com.mirkoalicastro.mavenversionrefactor.xml.getTags
 import org.apache.xerces.util.XMLChar
 
-class FreeVersionProvider {
-    companion object {
-        private const val VERSION_SUFFIX = ".version"
-        private const val NORMALIZED_PREFIX = "dependency."
-        private const val DASH = '-'
-        private const val MAX_ATTEMPTS = 5
-    }
+private const val versionSuffix = ".version"
+private const val normalizedPrefix = "dependency."
+private const val maxAttempts = 5
 
+class FreeVersionProvider {
     fun getFreeVersion(project: XmlTag, dependency: Dependency): String? {
         val properties = project.getTags().getTag(PROPERTIES.xmlName)
-        val candidate = normalize(dependency.artifactId + VERSION_SUFFIX)
+        val candidate = normalize(dependency.artifactId + versionSuffix)
         return if (properties == null || isPropertyAvailable(properties, candidate)) {
             candidate
         } else {
-            fallbackWithFullName(properties, dependency)
+            fallback(properties, dependency)
         }
     }
 
-    private fun fallbackWithFullName(properties: XmlTag, dependency: Dependency): String? {
-        val candidate = normalize(dependency.groupId + DASH + dependency.artifactId + VERSION_SUFFIX)
-        return if (isPropertyAvailable(properties, candidate)) {
-            candidate
-        } else {
-            val prefix = dependency.groupId + DASH + dependency.artifactId + DASH
-            fallbackWithFullNameAndAttempt(properties, prefix, 1)
+    private tailrec fun fallback(properties: XmlTag, dependency: Dependency, attempt: Int = 0): String? {
+        val attemptSuffix = if (attempt > 0) "-$attempt" else ""
+        val candidate = normalize(dependency.groupId + "-" + dependency.artifactId + attemptSuffix + versionSuffix)
+
+        return when {
+            isPropertyAvailable(properties, candidate) -> candidate
+            attempt < maxAttempts -> fallback(properties, dependency, attempt + 1)
+            else -> null
         }
     }
 
-    private fun fallbackWithFullNameAndAttempt(properties: XmlTag, prefix: String, attempt: Int): String? =
-        if (attempt < MAX_ATTEMPTS) {
-            val candidate = normalize(prefix + (attempt + 1) + VERSION_SUFFIX)
-            if (isPropertyAvailable(properties, candidate)) {
-                candidate
-            } else {
-                fallbackWithFullNameAndAttempt(properties, prefix, attempt + 1)
-            }
-        } else {
-            null
-        }
-
-    private fun isPropertyAvailable(properties: XmlTag, property: String) = isValidProperty(property) &&
+    private fun isPropertyAvailable(properties: XmlTag, property: String) =
         properties.children
             .filter { XmlTag::class.java.isInstance(it) }
             .map { XmlTag::class.java.cast(it) }
             .none { property.equals(it.name, ignoreCase = true) }
 
-    private fun normalize(property: String) = if (isValidProperty(property)) {
+    private fun normalize(property: String) = if (XMLChar.isValidName(property)) {
         property
     } else {
-        NORMALIZED_PREFIX + property
+        normalizedPrefix + property
     }
-
-    private fun isValidProperty(property: String) = XMLChar.isValidName(property)
 }
