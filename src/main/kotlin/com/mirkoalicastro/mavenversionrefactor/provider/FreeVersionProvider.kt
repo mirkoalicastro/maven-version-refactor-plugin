@@ -2,7 +2,6 @@ package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
-import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName
 import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.PROPERTIES
 import com.mirkoalicastro.mavenversionrefactor.xml.getTag
 import com.mirkoalicastro.mavenversionrefactor.xml.getTags
