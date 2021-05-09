@@ -19,20 +19,18 @@ class MavenVersionRefactorAction(
 
     override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) {
         val pom = pomFactory.create(psiElement)
-        val version = pom?.getFreeVersion()
-
-        if (version != null) {
-            propertiesUpdater.addVersion(pom, version)
+        pom?.let(::getFreeVersion)?.let {
+            propertiesUpdater.addVersion(pom, it)
         }
     }
 
     override fun isAvailable(project: Project, editor: Editor?, psiElement: PsiElement) =
-        pomFactory.create(psiElement)?.getFreeVersion() != null
+        pomFactory.create(psiElement)?.let(::getFreeVersion) != null
 
     override fun getText() = "Refactor version as property"
 
     override fun getFamilyName() = "Maven Version Refactor"
 
-    private fun PomXmlAware.getFreeVersion() =
-        freeVersionProvider.getFreeVersion(project, dependencyXmlAware.dependency)
+    private fun getFreeVersion(pom: PomXmlAware) =
+        freeVersionProvider.getFreeVersion(pom.project, pom.dependencyXmlAware.dependency)
 }

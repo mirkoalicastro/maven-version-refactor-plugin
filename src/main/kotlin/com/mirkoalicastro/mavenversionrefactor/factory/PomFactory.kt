@@ -12,8 +12,7 @@ import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.GROUP_ID
 import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.PLUGIN
 import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.PROJECT
 import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.VERSION
-import com.mirkoalicastro.mavenversionrefactor.xml.getTag
-import com.mirkoalicastro.mavenversionrefactor.xml.getTags
+import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 
 private val variableRegex = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
 
@@ -21,10 +20,10 @@ class PomFactory {
     fun create(element: PsiElement): PomXmlAware? {
         val root = if (isPomFile(element)) getRoot(element) else null
         if (root != null && PROJECT.xmlName.equals(root.name, ignoreCase = true)) {
-            val children = findEligibleTag(element)?.getTags()
-            val groupId = children?.getTag(GROUP_ID.xmlName)
-            val artifactId = children?.getTag(ARTIFACT_ID.xmlName)
-            val version = children?.getTag(VERSION.xmlName)
+            val eligible = findEligibleTag(element)
+            val groupId = eligible?.getChildTag(GROUP_ID.xmlName)
+            val artifactId = eligible?.getChildTag(ARTIFACT_ID.xmlName)
+            val version = eligible?.getChildTag(VERSION.xmlName)
             val versionText = version?.value?.textElements?.getOrNull(0)
 
             if (groupId != null && artifactId != null && version != null && versionText != null && isNotVar(version)) {

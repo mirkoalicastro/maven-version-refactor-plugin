@@ -3,8 +3,7 @@ package com.mirkoalicastro.mavenversionrefactor.provider
 import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
 import com.mirkoalicastro.mavenversionrefactor.domain.xml.XmlNodeName.PROPERTIES
-import com.mirkoalicastro.mavenversionrefactor.xml.getTag
-import com.mirkoalicastro.mavenversionrefactor.xml.getTags
+import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import org.apache.xerces.util.XMLChar
 
 private const val versionSuffix = ".version"
@@ -13,7 +12,7 @@ private const val maxAttempts = 5
 
 class FreeVersionProvider {
     fun getFreeVersion(project: XmlTag, dependency: Dependency): String? {
-        val properties = project.getTags().getTag(PROPERTIES.xmlName)
+        val properties = project.getChildTag(PROPERTIES.xmlName)
         val candidate = normalize(dependency.artifactId + versionSuffix)
         return if (properties == null || isPropertyAvailable(properties, candidate)) {
             candidate
