@@ -91,7 +91,7 @@ tasks {
 
     test {
         useJUnitPlatform()
-        finalizedBy(jacocoTestReport)
+        finalizedBy(jacocoTestReport, jacocoTestCoverageVerification)
         doLast {
             println("View code coverage at: file://$buildDir/reports/jacoco/test/html/index.html")
         }
