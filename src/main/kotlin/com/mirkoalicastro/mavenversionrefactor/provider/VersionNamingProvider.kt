@@ -1,19 +1,19 @@
 package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
-import com.mirkoalicastro.mavenversionrefactor.domain.Tag.Properties
+import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import com.mirkoalicastro.mavenversionrefactor.maven.Tag.Properties
 import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import org.apache.xerces.util.XMLChar
 
-class FreeVersionProvider {
+class VersionNamingProvider {
     companion object {
         private const val versionSuffix = ".version"
         private const val normalizedPrefix = "dependency."
         private const val maxAttempts = 5
     }
 
-    fun getFreeVersion(project: XmlTag, dependency: Dependency): String? {
+    fun provide(project: XmlTag, dependency: Dependency): String? {
         val properties = project.getChildTag(Properties.xmlName)
         val candidate = normalize(dependency.artifactId + versionSuffix)
         return if (properties == null || isPropertyAvailable(properties, candidate)) {

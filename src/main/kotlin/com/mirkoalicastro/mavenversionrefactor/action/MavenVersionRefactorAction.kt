@@ -6,12 +6,12 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.mirkoalicastro.mavenversionrefactor.domain.Pom
 import com.mirkoalicastro.mavenversionrefactor.factory.PomFactory
-import com.mirkoalicastro.mavenversionrefactor.provider.FreeVersionProvider
+import com.mirkoalicastro.mavenversionrefactor.maven.Pom
+import com.mirkoalicastro.mavenversionrefactor.provider.VersionNamingProvider
 
 class MavenVersionRefactorAction(
-    private val freeVersionProvider: FreeVersionProvider = FreeVersionProvider(),
+    private val versionNamingProvider: VersionNamingProvider = VersionNamingProvider(),
     private val pomFactory: PomFactory = PomFactory()
 ) : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
 
@@ -30,5 +30,5 @@ class MavenVersionRefactorAction(
     override fun getFamilyName() = "Maven Version Refactor"
 
     private fun getFreeVersion(pom: Pom) =
-        freeVersionProvider.getFreeVersion(pom.project, pom.dependency)
+        versionNamingProvider.provide(pom.project, pom.dependency)
 }

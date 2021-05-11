@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.domain
+package com.mirkoalicastro.mavenversionrefactor.maven
 
 data class Dependency(val groupId: String, val artifactId: String, val version: Version) {
     fun getVersion() = version.value

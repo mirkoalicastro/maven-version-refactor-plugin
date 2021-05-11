@@ -3,10 +3,10 @@ package com.mirkoalicastro.mavenversionrefactor.factory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.domain.Dependency
-import com.mirkoalicastro.mavenversionrefactor.domain.Pom
-import com.mirkoalicastro.mavenversionrefactor.domain.Tag
-import com.mirkoalicastro.mavenversionrefactor.domain.Version
+import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import com.mirkoalicastro.mavenversionrefactor.maven.Pom
+import com.mirkoalicastro.mavenversionrefactor.maven.Tag
+import com.mirkoalicastro.mavenversionrefactor.maven.Version
 import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 
 private val variableRegex = Regex("^\\s*\\$\\s*\\{.+}\\s*$")

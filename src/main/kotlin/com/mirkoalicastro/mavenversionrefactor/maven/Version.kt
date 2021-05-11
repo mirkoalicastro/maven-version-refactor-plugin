@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.domain
+package com.mirkoalicastro.mavenversionrefactor.maven
 
 import com.intellij.psi.xml.XmlText
 
