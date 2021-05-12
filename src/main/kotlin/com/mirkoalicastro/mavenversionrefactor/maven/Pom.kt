@@ -8,8 +8,8 @@ data class Pom(
     val dependency: Dependency
 ) {
     fun addVersion(name: String) {
-        addProperty(getProperties(), name, dependency.getVersion())
-        dependency.setVersion("\${$name}")
+        addProperty(getProperties(), name, dependency.version)
+        dependency.version = "\${$name}"
     }
 
     private fun getProperties() =
