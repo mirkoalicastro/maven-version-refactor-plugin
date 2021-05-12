@@ -9,24 +9,25 @@ import com.mirkoalicastro.mavenversionrefactor.maven.Tag
 import com.mirkoalicastro.mavenversionrefactor.maven.Version
 import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 
-private val variableRegex = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
+private val VAR_REGEX = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
 
 class PomFactory {
     fun create(element: PsiElement): Pom? {
         val root = if (isPomFile(element)) getRoot(element) else null
         return if (root != null && Tag.Project.xmlName.equals(root.name, ignoreCase = true)) {
-            val eligible = findEligibleTag(element)
-            val groupId = eligible?.getChildTag(Tag.GroupId.xmlName)
-            val artifactId = eligible?.getChildTag(Tag.ArtifactId.xmlName)
-            val version = eligible?.getChildTag(Tag.Version.xmlName)
-            val versionText = version?.value?.textElements?.getOrNull(0)
+            val eligibleTag = findEligibleTag(element)
+            val groupIdTag = eligibleTag?.getChildTag(Tag.GroupId.xmlName)
+            val artifactIdTag = eligibleTag?.getChildTag(Tag.ArtifactId.xmlName)
+            val versionTag = eligibleTag?.getChildTag(Tag.Version.xmlName)
+            val versionText = versionTag?.value?.textElements?.getOrNull(0)
 
             when {
-                groupId == null || artifactId == null || versionText == null -> null
-                isNotVar(version) -> null
+                groupIdTag == null || artifactIdTag == null || versionText == null -> null
+                isVariable(versionTag) -> null
                 else -> {
-                    val dep = Dependency(groupId.value.text, artifactId.value.text, Version(version.value.text, versionText))
-                    Pom(root, dep)
+                    val version = Version(versionTag.value.text, versionText)
+                    val dependency = Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
+                    Pom(root, dependency)
                 }
             }
         } else {
@@ -39,7 +40,7 @@ class PomFactory {
             .filterIsInstance<XmlTag>()
             .find { it.name == Tag.Dependency.xmlName || it.name == Tag.Plugin.xmlName }
 
-    private fun isNotVar(tag: XmlTag) = !tag.value.text.matches(variableRegex)
+    private fun isVariable(tag: XmlTag) = tag.value.text.matches(VAR_REGEX)
 
     private fun getRoot(element: PsiElement) = (element.containingFile as? XmlFile)?.rootTag
 

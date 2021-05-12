@@ -2,34 +2,33 @@ package com.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import com.mirkoalicastro.mavenversionrefactor.maven.Pom
 import com.mirkoalicastro.mavenversionrefactor.maven.Tag.Properties
 import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import org.apache.xerces.util.XMLChar
 
-class VersionNamingProvider {
-    companion object {
-        private const val versionSuffix = ".version"
-        private const val normalizedPrefix = "dependency."
-        private const val maxAttempts = 5
-    }
+private const val VERSION_SUFFIX = ".version"
+private const val VERSION_PREFIX = "dependency."
+private const val MAX_ATTEMPTS = 5
 
-    fun provide(project: XmlTag, dependency: Dependency): String? {
-        val properties = project.getChildTag(Properties.xmlName)
-        val candidate = normalize(dependency.artifactId + versionSuffix)
+class VersionNamingProvider {
+    fun provide(pom: Pom): String? {
+        val properties = pom.project.getChildTag(Properties.xmlName)
+        val candidate = normalize(pom.dependency.artifactId + VERSION_SUFFIX)
         return if (properties == null || isPropertyAvailable(properties, candidate)) {
             candidate
         } else {
-            fallback(properties, dependency)
+            fallback(properties, pom.dependency)
         }
     }
 
     private tailrec fun fallback(properties: XmlTag, dependency: Dependency, attempt: Int = 0): String? {
         val attemptSuffix = if (attempt > 0) "-$attempt" else ""
-        val candidate = normalize(dependency.groupId + "-" + dependency.artifactId + attemptSuffix + versionSuffix)
+        val candidate = normalize(dependency.groupId + "-" + dependency.artifactId + attemptSuffix + VERSION_SUFFIX)
 
         return when {
             isPropertyAvailable(properties, candidate) -> candidate
-            attempt < maxAttempts -> fallback(properties, dependency, attempt + 1)
+            attempt < MAX_ATTEMPTS -> fallback(properties, dependency, attempt + 1)
             else -> null
         }
     }
@@ -44,6 +43,6 @@ class VersionNamingProvider {
         if (XMLChar.isValidName(property)) {
             property
         } else {
-            normalizedPrefix + property
+            VERSION_PREFIX + property
         }
 }
