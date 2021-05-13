@@ -20,8 +20,8 @@ data class Pom(
 
     private fun getCurrentProperties() = project.getChildTag(Tag.Properties.xmlName)
 
-    private fun addProperty(parent: XmlTag, node: String, value: String = "") {
-        val childTag = parent.createChildTag(node, parent.namespace, value, true)
+    private fun addProperty(parent: XmlTag, name: String, value: String = "") {
+        val childTag = parent.createChildTag(name, parent.namespace, value, true)
         parent.addSubTag(childTag, true)
     }
 }

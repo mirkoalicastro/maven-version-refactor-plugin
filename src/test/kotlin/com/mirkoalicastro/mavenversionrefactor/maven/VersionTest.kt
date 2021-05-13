@@ -7,10 +7,11 @@ import io.mockk.mockk
 import io.mockk.verify
 
 class VersionTest : StringSpec({
+    val version = "dummyVersion"
+
     val tag: XmlText = mockk()
 
     "should set version on tag" {
-        val version = "dummyVersion"
         justRun { tag.value = version }
 
         Version("value", tag).set(version)

@@ -11,7 +11,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <intentionAction order="first">
-            <className>com.mirkoalicastro.mavenversionrefactor.action.MavenVersionRefactorAction</className>
+            <className>com.mirkoalicastro.mavenversionrefactor.MavenVersionRefactorAction</className>
         </intentionAction>
     </extensions>
 </idea-plugin>

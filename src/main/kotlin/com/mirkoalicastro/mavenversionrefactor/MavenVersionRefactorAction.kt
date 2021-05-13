@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.action
+package com.mirkoalicastro.mavenversionrefactor
 
 import com.intellij.codeInsight.intention.HighPriorityAction
 import com.intellij.codeInsight.intention.IntentionAction
@@ -9,10 +9,10 @@ import com.intellij.psi.PsiElement
 import com.mirkoalicastro.mavenversionrefactor.factory.PomFactory
 import com.mirkoalicastro.mavenversionrefactor.provider.VersionNamingProvider
 
-class MavenVersionRefactorAction(
-    private val versionNamingProvider: VersionNamingProvider = VersionNamingProvider(),
-    private val pomFactory: PomFactory = PomFactory()
-) : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
+class MavenVersionRefactorAction : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
+
+    private val pomFactory = PomFactory()
+    private val versionNamingProvider = VersionNamingProvider()
 
     override fun invoke(project: Project, editor: Editor?, psiElement: PsiElement) {
         val pom = pomFactory.create(psiElement)

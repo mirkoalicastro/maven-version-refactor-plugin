@@ -4,3 +4,6 @@
 formatting:
   Indentation:
     continuationIndentSize: 8
+naming:
+  ConstructorParameterNaming:
+    active: false
