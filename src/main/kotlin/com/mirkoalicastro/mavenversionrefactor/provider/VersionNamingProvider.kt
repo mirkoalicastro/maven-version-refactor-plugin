@@ -33,8 +33,5 @@ class VersionNamingProvider {
     }
 
     private fun isPropertyAvailable(properties: XmlTag?, property: String) =
-        XMLChar.isValidName(property) && properties?.children
-            ?.filter { XmlTag::class.java.isInstance(it) }
-            ?.map { XmlTag::class.java.cast(it) }
-            ?.none { property.equals(it.name, ignoreCase = true) } ?: true
+        XMLChar.isValidName(property) && properties?.getChildTag(property) == null
 }
