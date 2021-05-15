@@ -8,23 +8,22 @@ import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import org.apache.xerces.util.XMLChar
 
 private const val VERSION_SUFFIX = ".version"
-private const val VERSION_PREFIX = "dependency."
-private const val MAX_ATTEMPTS = 5
+private const val MAX_ATTEMPTS = 3
 
 class VersionNamingProvider {
     fun provide(pom: Pom): String? {
         val properties = pom.project.getChildTag(Properties.xmlName)
-        val candidate = normalize(pom.dependency.artifactId + VERSION_SUFFIX)
-        return if (properties == null || isPropertyAvailable(properties, candidate)) {
+        val candidate = pom.dependency.artifactId + VERSION_SUFFIX
+        return if (isPropertyAvailable(properties, candidate)) {
             candidate
         } else {
             fallback(properties, pom.dependency)
         }
     }
 
-    private tailrec fun fallback(properties: XmlTag, dependency: Dependency, attempt: Int = 0): String? {
+    private tailrec fun fallback(properties: XmlTag?, dependency: Dependency, attempt: Int = 0): String? {
         val attemptSuffix = if (attempt > 0) "-$attempt" else ""
-        val candidate = normalize(dependency.groupId + "-" + dependency.artifactId + attemptSuffix + VERSION_SUFFIX)
+        val candidate = dependency.groupId + "-" + dependency.artifactId + attemptSuffix + VERSION_SUFFIX
 
         return when {
             isPropertyAvailable(properties, candidate) -> candidate
@@ -33,16 +32,9 @@ class VersionNamingProvider {
         }
     }
 
-    private fun isPropertyAvailable(properties: XmlTag, property: String) =
-        properties.children
-            .filter { XmlTag::class.java.isInstance(it) }
-            .map { XmlTag::class.java.cast(it) }
-            .none { property.equals(it.name, ignoreCase = true) }
-
-    private fun normalize(property: String) =
-        if (XMLChar.isValidName(property)) {
-            property
-        } else {
-            VERSION_PREFIX + property
-        }
+    private fun isPropertyAvailable(properties: XmlTag?, property: String) =
+        XMLChar.isValidName(property) && properties?.children
+            ?.filter { XmlTag::class.java.isInstance(it) }
+            ?.map { XmlTag::class.java.cast(it) }
+            ?.none { property.equals(it.name, ignoreCase = true) } ?: true
 }
