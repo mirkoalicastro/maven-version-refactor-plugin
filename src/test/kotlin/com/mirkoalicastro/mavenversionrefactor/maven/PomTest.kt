@@ -2,7 +2,9 @@ package com.mirkoalicastro.mavenversionrefactor.maven
 
 import com.intellij.psi.xml.XmlTag
 import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.justRun
@@ -30,19 +32,20 @@ class PomTest : StringSpec({
         justRun { dependency.version = "\${$name}" }
     }
 
+    fun verifyDirectFlow() = verify {
+        project.getChildTag("properties")
+        properties.namespace
+        dependency.version
+        properties.createChildTag(name, namespace, version, true)
+        properties.addSubTag(property, true)
+        dependency.version = "\${$name}"
+    }
+
     beforeTest {
         mockkStatic(XmlTag::getChildTag)
     }
 
     afterTest {
-        verify {
-            project.getChildTag("properties")
-            properties.namespace
-            dependency.version
-            properties.createChildTag(name, namespace, version, true)
-            properties.addSubTag(property, true)
-            dependency.version = "\${$name}"
-        }
         clearAllMocks()
     }
 
@@ -51,6 +54,8 @@ class PomTest : StringSpec({
         mockDirectFlow()
 
         underTest.addVersion(name)
+
+        verifyDirectFlow()
     }
 
     "should add version to new properties when properties do not exist" {
@@ -67,6 +72,14 @@ class PomTest : StringSpec({
             project.namespace
             project.createChildTag("properties", namespace, "", true)
             project.addSubTag(properties, true)
+        }
+        verifyDirectFlow()
+    }
+
+    "should get members" {
+        assertSoftly {
+            underTest.project shouldBe project
+            underTest.dependency shouldBe dependency
         }
     }
 })

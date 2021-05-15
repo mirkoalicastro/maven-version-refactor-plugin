@@ -1,5 +1,6 @@
 package com.mirkoalicastro.mavenversionrefactor.maven
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
@@ -16,13 +17,14 @@ class DependencyTest : StringSpec({
         clearAllMocks()
     }
 
-    "should get version" {
-        val dummyValue = "dummyValue"
-        every { version.value } returns dummyValue
+    "should get members" {
+        every { version.value } returns "dummyValue"
 
-        val actual = underTest.version
-
-        actual shouldBe dummyValue
+        assertSoftly {
+            underTest.groupId shouldBe "groupId"
+            underTest.artifactId shouldBe "artifactId"
+            underTest.version shouldBe "dummyValue"
+        }
         verify { version.value }
     }
 
