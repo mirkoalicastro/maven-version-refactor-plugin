@@ -16,6 +16,8 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
     // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    // JaCoCo
+    id("jacoco")
 }
 
 // Import variables from gradle.properties file
@@ -43,6 +45,8 @@ repositories {
 }
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
+    testImplementation("io.kotest:kotest-runner-junit5:4.4.3")
+    testImplementation("io.mockk:mockk:1.11.0")
 }
 
 // Configure gradle-intellij-plugin plugin.
@@ -71,6 +75,10 @@ detekt {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.6"
+}
+
 tasks {
     // Set the compatibility versions to 1.8
     withType<JavaCompile> {
@@ -83,6 +91,28 @@ tasks {
 
     withType<Detekt> {
         jvmTarget = "1.8"
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy(jacocoTestReport, jacocoTestCoverageVerification)
+        doLast {
+            println("View code coverage at: file://$buildDir/reports/jacoco/test/html/index.html")
+        }
+    }
+
+    jacocoTestReport {
+        dependsOn(test)
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    minimum = BigDecimal.ONE
+                }
+            }
+        }
     }
 
     patchPluginXml {
