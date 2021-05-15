@@ -109,7 +109,7 @@ tasks {
         violationRules {
             rule {
                 limit {
-                    minimum = BigDecimal.ZERO
+                    minimum = BigDecimal.ONE
                 }
             }
         }
