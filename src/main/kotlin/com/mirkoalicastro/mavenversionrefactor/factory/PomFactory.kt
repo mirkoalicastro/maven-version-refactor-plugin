@@ -8,41 +8,54 @@ import com.mirkoalicastro.mavenversionrefactor.maven.Pom
 import com.mirkoalicastro.mavenversionrefactor.maven.Tag
 import com.mirkoalicastro.mavenversionrefactor.maven.Version
 import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import com.mirkoalicastro.mavenversionrefactor.xml.textValue
 
-private val VAR_REGEX = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
+private val variablePattern = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
 
 class PomFactory {
-    fun create(element: PsiElement): Pom? {
-        val root = if (isPomFile(element)) getRoot(element) else null
-        return if (root != null && Tag.Project.xmlName.equals(root.name, ignoreCase = true)) {
-            val eligibleTag = findEligibleTag(element)
-            val groupIdTag = eligibleTag?.getChildTag(Tag.GroupId.xmlName)
-            val artifactIdTag = eligibleTag?.getChildTag(Tag.ArtifactId.xmlName)
-            val versionTag = eligibleTag?.getChildTag(Tag.Version.xmlName)
-            val versionText = versionTag?.value?.textElements?.getOrNull(0)
-
+    fun create(element: PsiElement) =
+        getPomRoot(element)?.let {
             when {
-                groupIdTag == null || artifactIdTag == null || versionText == null -> null
-                isVariable(versionTag) -> null
-                else -> {
-                    val version = Version(versionTag.value.text, versionText)
-                    val dependency = Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
-                    Pom(root, dependency)
-                }
+                Tag.Project.value.equals(it.name, ignoreCase = true) -> create(it, element)
+                else -> null
             }
-        } else {
-            null
+        }
+
+    private fun create(root: XmlTag, element: PsiElement): Pom? {
+        val eligibleTag = findEligibleTag(element)
+        val groupIdTag = eligibleTag?.getChildTag(Tag.GroupId.value)
+        val artifactIdTag = eligibleTag?.getChildTag(Tag.ArtifactId.value)
+        val versionText = eligibleTag?.getChildTag(Tag.Version.value)?.textValue
+
+        return when {
+            groupIdTag == null || artifactIdTag == null || versionText == null -> null
+            isVariable(versionText.text) -> null
+            else -> {
+                val version = Version(versionText.text, versionText)
+                val dependency = Dependency(groupIdTag.value.text, artifactIdTag.value.text, version)
+                Pom(root, dependency)
+            }
         }
     }
 
-    private fun findEligibleTag(element: PsiElement) =
-        listOf(element.parent, element.parent?.parent, element.parent?.parent?.parent)
+    private fun findEligibleTag(element: PsiElement): XmlTag? {
+        val firstParent = element.parent
+        val secondParent = firstParent?.parent
+        val thirdParent = secondParent?.parent
+        return listOf(firstParent, secondParent, thirdParent)
             .filterIsInstance<XmlTag>()
-            .find { it.name == Tag.Dependency.xmlName || it.name == Tag.Plugin.xmlName }
+            .find { it.name == Tag.Dependency.value || it.name == Tag.Plugin.value }
+    }
 
-    private fun isVariable(tag: XmlTag) = tag.value.text.matches(VAR_REGEX)
+    private fun isVariable(str: String) =
+        str.matches(variablePattern)
 
-    private fun getRoot(element: PsiElement) = (element.containingFile as? XmlFile)?.rootTag
+    private fun getPomRoot(element: PsiElement) =
+        when {
+            isPomFile(element) -> (element.containingFile as? XmlFile)?.rootTag
+            else -> null
+        }
 
-    private fun isPomFile(element: PsiElement) = element.containingFile.name.equals("pom.xml", ignoreCase = true)
+    private fun isPomFile(element: PsiElement) =
+        element.containingFile.name.equals("pom.xml", ignoreCase = true)
 }

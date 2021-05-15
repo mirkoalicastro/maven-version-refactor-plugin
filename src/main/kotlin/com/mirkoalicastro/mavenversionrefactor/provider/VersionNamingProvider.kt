@@ -12,7 +12,7 @@ private const val MAX_ATTEMPTS = 3
 
 class VersionNamingProvider {
     fun provide(pom: Pom): String? {
-        val properties = pom.project.getChildTag(Properties.xmlName)
+        val properties = pom.project.getChildTag(Properties.value)
         val candidate = pom.dependency.artifactId + VERSION_SUFFIX
         return if (isPropertyAvailable(properties, candidate)) {
             candidate
