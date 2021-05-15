@@ -2,6 +2,10 @@
 
 # maven-artifacts-version-refactor Changelog
 
+## 1.0.4
+- Simplified logic.
+- JaCoCo coverage increased to 100%.
+
 ## 1.0.3
 - Added support for IntelliJ IDEA 2021.1.
 
