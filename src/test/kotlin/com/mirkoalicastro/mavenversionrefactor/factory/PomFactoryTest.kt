@@ -35,8 +35,7 @@ class PomFactoryTest : StringSpec({
     val underTest = PomFactory()
 
     beforeTest {
-        mockkStatic(XmlTag::getChildTag)
-        mockkStatic(XmlTag::textValue)
+        mockkStatic("com.mirkoalicastro.mavenversionrefactor.xml.Extensions")
     }
 
     afterTest {

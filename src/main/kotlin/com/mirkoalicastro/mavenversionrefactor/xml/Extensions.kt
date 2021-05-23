@@ -1,3 +1,4 @@
+@file:JvmName("Extensions")
 package com.mirkoalicastro.mavenversionrefactor.xml
 
 import com.intellij.psi.xml.XmlTag

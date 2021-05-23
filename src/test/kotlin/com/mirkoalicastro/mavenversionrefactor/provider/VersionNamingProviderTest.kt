@@ -26,7 +26,7 @@ class VersionNamingProviderTest : StringSpec({
     val underTest = VersionNamingProvider()
 
     beforeTest {
-        mockkStatic(XmlTag::getChildTag)
+        mockkStatic("com.mirkoalicastro.mavenversionrefactor.xml.Extensions")
     }
 
     afterTest {
