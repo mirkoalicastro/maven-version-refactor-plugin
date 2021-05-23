@@ -1,4 +1,4 @@
-name: Verification/Check
+name: Build
 
 on:
   push:
@@ -19,4 +19,4 @@ jobs:
         with:
           distribution: 'adopt-hotspot'
           java-version: '8'
-      - run: ./gradlew check
+      - run: ./gradlew build
