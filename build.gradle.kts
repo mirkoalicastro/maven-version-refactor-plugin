@@ -44,9 +44,9 @@ repositories {
     jcenter()
 }
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
-    testImplementation("io.kotest:kotest-runner-junit5:4.4.3")
-    testImplementation("io.mockk:mockk:1.11.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.18.1")
+    testImplementation("io.kotest:kotest-runner-junit5:4.6.1")
+    testImplementation("io.mockk:mockk:1.12.0")
 }
 
 // Configure gradle-intellij-plugin plugin.
