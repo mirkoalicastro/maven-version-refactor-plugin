@@ -2,6 +2,9 @@
 
 # maven-artifacts-version-refactor Changelog
 
+## 1.0.5
+- Fix compatibility issue.
+
 ## 1.0.4
 - Simplified logic.
 - JaCoCo coverage increased to 100%.
