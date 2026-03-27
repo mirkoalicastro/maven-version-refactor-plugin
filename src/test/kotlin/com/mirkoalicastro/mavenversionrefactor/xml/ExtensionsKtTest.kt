@@ -46,7 +46,7 @@ class ExtensionsKtTest : StringSpec({
             headers("elements", "expected"),
             row(arrayOf<XmlText>(), null),
             row(arrayOf<XmlText>(firstElement), firstElement),
-            row(arrayOf<XmlText>(firstElement, mockk()), firstElement)
+            row(arrayOf<XmlText>(firstElement, mockk()), firstElement),
         ).forAll { elements, expected ->
             val underTest = createTextValueUnderTest(elements)
 

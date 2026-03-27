@@ -43,9 +43,10 @@ class PomFactoryTest : StringSpec({
     }
 
     "should return null when file type is not XML" {
-        every { element.containingFile } returns mockk<JsonFile>().apply {
-            every { name } returns "pom.xml"
-        }
+        every { element.containingFile } returns
+            mockk<JsonFile>().apply {
+                every { name } returns "pom.xml"
+            }
 
         val actual = underTest.create(element)
 
@@ -101,7 +102,7 @@ class PomFactoryTest : StringSpec({
             headers("parents"),
             row(listOf(null, null, null)),
             row(listOf(element, null, null)),
-            row(listOf(element, element, null))
+            row(listOf(element, element, null)),
         ).forAll { parents ->
             every { element.containingFile } returns containingFile
             every { containingFile.name } returns "pom.xml"
@@ -151,7 +152,7 @@ class PomFactoryTest : StringSpec({
         table(
             headers("eligibleTagName", "actualVersion"),
             row("dependency", "\${version}"),
-            row("plugin", "\${test.version}")
+            row("plugin", "\${test.version}"),
         ).forAll { name, version ->
             every { element.containingFile } returns containingFile
             every { containingFile.name } returns "pom.xml"
@@ -176,7 +177,7 @@ class PomFactoryTest : StringSpec({
         table(
             headers("eligibleTagName"),
             row("dependency"),
-            row("plugin")
+            row("plugin"),
         ).forAll { name ->
             every { element.containingFile } returns containingFile
             every { containingFile.name } returns "pom.xml"
@@ -190,12 +191,14 @@ class PomFactoryTest : StringSpec({
             every { parent.getChildTag("version") } returns versionTag
             every { versionTag.textValue } returns versionText
             every { versionText.text } returns "123"
-            every { groupIdTag.value } returns mockk<XmlTagValue>().apply {
-                every { text } returns "groupId"
-            }
-            every { artifactIdTag.value } returns mockk<XmlTagValue>().apply {
-                every { text } returns "artifactId"
-            }
+            every { groupIdTag.value } returns
+                mockk<XmlTagValue>().apply {
+                    every { text } returns "groupId"
+                }
+            every { artifactIdTag.value } returns
+                mockk<XmlTagValue>().apply {
+                    every { text } returns "artifactId"
+                }
 
             val actual = underTest.create(element)
 

@@ -71,7 +71,7 @@ class VersionNamingProviderTest : StringSpec({
             headers("times", "expected"),
             row(0, "$groupId-$artifactId-1.version"),
             row(1, "$groupId-$artifactId-2.version"),
-            row(2, "$groupId-$artifactId-3.version")
+            row(2, "$groupId-$artifactId-3.version"),
         ).forAll { times, expected ->
             every { pom.project } returns project
             every { project.getChildTag("properties") } returns properties

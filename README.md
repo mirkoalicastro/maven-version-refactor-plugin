@@ -6,15 +6,11 @@
 ## Description
 
 <!-- Plugin description -->
-Helps to refactor a Maven <strong>pom.xml</strong> replacing inline dependencies/plugins versions with a dedicated property.
-
-This IntelliJ plugin adds an intention action that suggests extraction of a dependency/plugin version in a POM using a property.
-
-It adds an entry to **Preferences | Editor | Intentions | SDK Intentions**.
-
-It is a *high priority action*, enabled when the cursor is on a non-variable dependency/plugin xml node.
-
-Have a look at and contribute to the GitHub [repo](https://github.com/mirkoalicastro/maven-version-refactor-plugin).
+<p>Helps to refactor a Maven <strong>pom.xml</strong> replacing inline dependencies/plugins versions with a dedicated property.</p>
+<p>This IntelliJ plugin adds an intention action that suggests extraction of a dependency/plugin version in a POM using a property.</p>
+<p>It adds an entry to <strong>Preferences | Editor | Intentions | SDK Intentions</strong>.</p>
+<p>It is a <em>high priority action</em>, enabled when the cursor is on a non-variable dependency/plugin xml node.</p>
+<p>Have a look at and contribute to the GitHub <a href="https://github.com/mirkoalicastro/maven-version-refactor-plugin">repo</a>.</p>
 <!-- Plugin description end -->
 
 ## Installation
