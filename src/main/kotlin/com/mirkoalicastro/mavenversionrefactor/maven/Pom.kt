@@ -5,7 +5,7 @@ import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 
 data class Pom(
     val project: XmlTag,
-    val dependency: Dependency
+    val dependency: Dependency,
 ) {
     fun addVersion(name: String) {
         addProperty(getProperties(), name, dependency.version)
@@ -20,7 +20,11 @@ data class Pom(
 
     private fun getCurrentProperties() = project.getChildTag(Tag.Properties.value)
 
-    private fun addProperty(parent: XmlTag, name: String, value: String = "") {
+    private fun addProperty(
+        parent: XmlTag,
+        name: String,
+        value: String = "",
+    ) {
         val childTag = parent.createChildTag(name, parent.namespace, value, true)
         parent.addSubTag(childTag, true)
     }

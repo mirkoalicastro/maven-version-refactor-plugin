@@ -21,7 +21,10 @@ class PomFactory {
             }
         }
 
-    private fun create(root: XmlTag, element: PsiElement): Pom? {
+    private fun create(
+        root: XmlTag,
+        element: PsiElement,
+    ): Pom? {
         val eligibleTag = findEligibleTag(element)
         val groupIdTag = eligibleTag?.getChildTag(Tag.GroupId.value)
         val artifactIdTag = eligibleTag?.getChildTag(Tag.ArtifactId.value)
@@ -47,8 +50,7 @@ class PomFactory {
             .find { it.name == Tag.Dependency.value || it.name == Tag.Plugin.value }
     }
 
-    private fun isVariable(str: String) =
-        str.matches(variablePattern)
+    private fun isVariable(str: String) = str.matches(variablePattern)
 
     private fun getPomRoot(element: PsiElement) =
         when {
@@ -56,6 +58,5 @@ class PomFactory {
             else -> null
         }
 
-    private fun isPomFile(element: PsiElement) =
-        element.containingFile.name.equals("pom.xml", ignoreCase = true)
+    private fun isPomFile(element: PsiElement) = element.containingFile.name.equals("pom.xml", ignoreCase = true)
 }

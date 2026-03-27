@@ -78,7 +78,7 @@ class MavenVersionRefactorActionTest : StringSpec({
         table(
             headers("version", "available"),
             row(null, false),
-            row("dummyVersion", true)
+            row("dummyVersion", true),
         ).forAll { version, expected ->
             every { pomFactory.create(psiElement) } returns pom
             every { versionNamingProvider.provide(pom) } returns version
@@ -99,14 +99,18 @@ class MavenVersionRefactorActionTest : StringSpec({
     }
 })
 
-private fun createUnderTest(pomFactory: PomFactory, versionNamingProvider: VersionNamingProvider) =
-    MavenVersionRefactorAction().apply {
-        overrideField("pomFactory", pomFactory)
-        overrideField("versionNamingProvider", versionNamingProvider)
-    }
+private fun createUnderTest(
+    pomFactory: PomFactory,
+    versionNamingProvider: VersionNamingProvider,
+) = MavenVersionRefactorAction().apply {
+    overrideField("pomFactory", pomFactory)
+    overrideField("versionNamingProvider", versionNamingProvider)
+}
 
-private fun MavenVersionRefactorAction.overrideField(name: String, value: Any) =
-    MavenVersionRefactorAction::class.java.declaredFields
-        .firstOrNull { it.name == name }
-        ?.apply { isAccessible = true }
-        ?.set(this, value)
+private fun MavenVersionRefactorAction.overrideField(
+    name: String,
+    value: Any,
+) = MavenVersionRefactorAction::class.java.declaredFields
+    .firstOrNull { it.name == name }
+    ?.apply { isAccessible = true }
+    ?.set(this, value)

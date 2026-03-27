@@ -7,5 +7,5 @@ enum class Tag(val value: String) {
     Version("version"),
     GroupId("groupId"),
     ArtifactId("artifactId"),
-    Project("project")
+    Project("project"),
 }

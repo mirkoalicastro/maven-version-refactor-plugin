@@ -1,158 +1,124 @@
 import io.gitlab.arturbosch.detekt.Detekt
-import org.jetbrains.changelog.closure
-import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // Java support
     id("java")
-    // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.4.30"
-    // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "0.6.5"
-    // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-    id("org.jetbrains.changelog") version "1.1.1"
-    // detekt linter - read more: https://detekt.github.io/detekt/gradle.html
-    id("io.gitlab.arturbosch.detekt") version "1.15.0"
-    // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
-    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
-    // JaCoCo
-    id("jacoco")
+    id("org.jetbrains.kotlin.jvm") version "2.1.20"
+    id("org.jetbrains.intellij.platform") version "2.13.1"
+    id("org.jetbrains.changelog") version "2.2.1"
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
 
-// Import variables from gradle.properties file
 val pluginGroup: String by project
-// `pluginName_` variable ends with `_` because of the collision with Kotlin magic getter in the `intellij` closure.
-// Read more about the issue: https://github.com/JetBrains/intellij-platform-plugin-template/issues/29
-val pluginName_: String by project
+val pluginName: String by project
 val pluginVersion: String by project
 val pluginSinceBuild: String by project
 val pluginUntilBuild: String by project
-val pluginVerifierIdeVersions: String by project
 
 val platformType: String by project
 val platformVersion: String by project
-val platformPlugins: String by project
-val platformDownloadSources: String by project
 
 group = pluginGroup
 version = pluginVersion
 
-// Configure project's dependencies
+kotlin {
+    jvmToolchain(21)
+}
+
 repositories {
     mavenCentral()
-    jcenter()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
+
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.18.1")
-    testImplementation("io.kotest:kotest-runner-junit5:4.6.1")
-    testImplementation("io.mockk:mockk:1.12.0")
+    intellijPlatform {
+        create(platformType, platformVersion)
+        pluginVerifier()
+    }
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
+    testImplementation("io.mockk:mockk:1.13.12")
 }
 
-// Configure gradle-intellij-plugin plugin.
-// Read more: https://github.com/JetBrains/gradle-intellij-plugin
-intellij {
-    pluginName = pluginName_
-    version = platformVersion
-    type = platformType
-    downloadSources = platformDownloadSources.toBoolean()
-    updateSinceUntilBuild = true
-
-    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    setPlugins(*platformPlugins.split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
-}
-
-// Configure detekt plugin.
-// Read more: https://detekt.github.io/detekt/kotlindsl.html
 detekt {
-    config = files("./detekt-config.yml")
+    config.setFrom("./detekt-config.yml")
     buildUponDefaultConfig = true
-
-    reports {
-        html.enabled = false
-        xml.enabled = false
-        txt.enabled = false
-    }
 }
 
-jacoco {
-    toolVersion = "0.8.6"
-}
-
-tasks {
-    // Set the compatibility versions to 1.8
-    withType<JavaCompile> {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
-    }
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-
-    withType<Detekt> {
-        jvmTarget = "1.8"
-    }
-
-    test {
-        useJUnitPlatform()
-        finalizedBy(jacocoTestReport, jacocoTestCoverageVerification)
-        doLast {
-            println("View code coverage at: file://$buildDir/reports/jacoco/test/html/index.html")
+intellijPlatform {
+    pluginConfiguration {
+        name = pluginName
+        version = pluginVersion
+        description =
+            provider {
+                file("./README.md").readText().lines().run {
+                    val start = "<!-- Plugin description -->"
+                    val end = "<!-- Plugin description end -->"
+                    if (!containsAll(listOf(start, end))) {
+                        throw GradleException("Plugin description section not found in README.md")
+                    }
+                    subList(indexOf(start) + 1, indexOf(end))
+                }.joinToString("\n")
+            }
+        changeNotes =
+            provider {
+                changelog.renderItem(changelog.getLatest(), Changelog.OutputType.HTML)
+            }
+        ideaVersion {
+            sinceBuild = pluginSinceBuild
+            if (pluginUntilBuild.isNotEmpty()) {
+                untilBuild = pluginUntilBuild
+            }
         }
     }
-
-    jacocoTestReport {
-        dependsOn(test)
+    pluginVerification {
+        ides {
+            recommended()
+        }
     }
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+        channels = listOf(pluginVersion.split('-').getOrElse(1) { "default" }.split('.').first())
+    }
+}
 
-    jacocoTestCoverageVerification {
-        violationRules {
-            rule {
-                limit {
-                    minimum = BigDecimal.ONE
+kover {
+    reports {
+        total {
+            verify {
+                rule {
+                    bound {
+                        minValue = 100
+                    }
                 }
             }
         }
     }
+}
 
-    patchPluginXml {
-        version(pluginVersion)
-        sinceBuild(pluginSinceBuild)
-        untilBuild(pluginUntilBuild)
-
-        // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription(
-            closure {
-                file("./README.md").readText().lines().run {
-                    val start = "<!-- Plugin description -->"
-                    val end = "<!-- Plugin description end -->"
-
-                    if (!containsAll(listOf(start, end))) {
-                        throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
-                    }
-                    subList(indexOf(start) + 1, indexOf(end))
-                }.joinToString("\n").run { markdownToHTML(this) }
-            }
-        )
-
-        // Get the latest available change notes from the changelog file
-        changeNotes(
-            closure {
-                changelog.getLatest().toHTML()
-            }
-        )
+tasks {
+    withType<JavaCompile> {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
-
-    runPluginVerifier {
-        ideVersions(pluginVerifierIdeVersions)
+    withType<KotlinCompile> {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
-
+    withType<Detekt> {
+        jvmTarget = "17"
+    }
+    test {
+        useJUnitPlatform()
+    }
     publishPlugin {
         dependsOn("patchChangelog")
-        token(System.getenv("PUBLISH_TOKEN"))
-        // pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
-        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
-        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels(pluginVersion.split('-').getOrElse(1) { "default" }.split('.').first())
     }
 }

@@ -32,14 +32,15 @@ class PomTest : StringSpec({
         justRun { dependency.version = "\${$name}" }
     }
 
-    fun verifyDirectFlow() = verify {
-        project.getChildTag("properties")
-        properties.namespace
-        dependency.version
-        properties.createChildTag(name, namespace, version, true)
-        properties.addSubTag(property, true)
-        dependency.version = "\${$name}"
-    }
+    fun verifyDirectFlow() =
+        verify {
+            project.getChildTag("properties")
+            properties.namespace
+            dependency.version
+            properties.createChildTag(name, namespace, version, true)
+            properties.addSubTag(property, true)
+            dependency.version = "\${$name}"
+        }
 
     beforeTest {
         mockkStatic("com.mirkoalicastro.mavenversionrefactor.xml.Extensions")

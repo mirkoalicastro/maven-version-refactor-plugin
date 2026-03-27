@@ -21,7 +21,11 @@ class VersionNamingProvider {
         }
     }
 
-    private tailrec fun fallback(properties: XmlTag?, dependency: Dependency, attempt: Int = 0): String? {
+    private tailrec fun fallback(
+        properties: XmlTag?,
+        dependency: Dependency,
+        attempt: Int = 0,
+    ): String? {
         val attemptSuffix = if (attempt > 0) "-$attempt" else ""
         val candidate = dependency.groupId + "-" + dependency.artifactId + attemptSuffix + VERSION_SUFFIX
 
@@ -32,6 +36,8 @@ class VersionNamingProvider {
         }
     }
 
-    private fun isPropertyAvailable(properties: XmlTag?, property: String) =
-        XMLChar.isValidName(property) && properties?.getChildTag(property) == null
+    private fun isPropertyAvailable(
+        properties: XmlTag?,
+        property: String,
+    ) = XMLChar.isValidName(property) && properties?.getChildTag(property) == null
 }
