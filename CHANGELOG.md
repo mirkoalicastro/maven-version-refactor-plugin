@@ -3,6 +3,7 @@
 # maven-artifacts-version-refactor Changelog
 
 ## 1.0.6
+- Create new property at the bottom of properties.
 - Update dependencies.
 
 ## 1.0.5

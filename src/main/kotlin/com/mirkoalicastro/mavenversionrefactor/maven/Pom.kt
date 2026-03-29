@@ -8,13 +8,13 @@ data class Pom(
     val dependency: Dependency,
 ) {
     fun addVersion(name: String) {
-        addProperty(getProperties(), name, dependency.version)
+        addProperty(getProperties(), name, false, dependency.version)
         dependency.version = "\${$name}"
     }
 
     private fun getProperties() =
         getCurrentProperties() ?: run {
-            addProperty(project, Tag.Properties.value)
+            addProperty(project, Tag.Properties.value, true)
             getCurrentProperties()!!
         }
 
@@ -23,9 +23,10 @@ data class Pom(
     private fun addProperty(
         parent: XmlTag,
         name: String,
+        top: Boolean,
         value: String = "",
     ) {
-        val childTag = parent.createChildTag(name, parent.namespace, value, true)
-        parent.addSubTag(childTag, true)
+        val childTag = parent.createChildTag(name, parent.namespace, value, top)
+        parent.addSubTag(childTag, top)
     }
 }
