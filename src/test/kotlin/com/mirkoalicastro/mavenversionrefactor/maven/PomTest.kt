@@ -27,8 +27,8 @@ class PomTest : StringSpec({
     fun mockDirectFlow() {
         every { properties.namespace } returns namespace
         every { dependency.version } returns version
-        every { properties.createChildTag(name, namespace, version, true) } returns property
-        every { properties.addSubTag(property, true) } returns property
+        every { properties.createChildTag(name, namespace, version, any()) } returns property
+        every { properties.addSubTag(property, any()) } returns property
         justRun { dependency.version = "\${$name}" }
     }
 
@@ -37,8 +37,8 @@ class PomTest : StringSpec({
             project.getChildTag("properties")
             properties.namespace
             dependency.version
-            properties.createChildTag(name, namespace, version, true)
-            properties.addSubTag(property, true)
+            properties.createChildTag(name, namespace, version, any())
+            properties.addSubTag(property, any())
             dependency.version = "\${$name}"
         }
 
