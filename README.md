@@ -1,7 +1,6 @@
 # Maven Version Refactor Plugin
 
 ![Version](https://img.shields.io/jetbrains/plugin/v/com.mirkoalicastro.mavenversionrefactor)
-![JaCoCo 100% coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
 ## Description
 
