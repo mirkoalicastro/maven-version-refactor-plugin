@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.maven
+package io.github.mirkoalicastro.mavenversionrefactor.maven
 
 data class Dependency(val groupId: String, val artifactId: String, private val _version: Version) {
     var version: String

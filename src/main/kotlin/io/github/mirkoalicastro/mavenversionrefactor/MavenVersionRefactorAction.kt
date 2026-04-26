@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor
+package io.github.mirkoalicastro.mavenversionrefactor
 
 import com.intellij.codeInsight.intention.HighPriorityAction
 import com.intellij.codeInsight.intention.IntentionAction
@@ -6,8 +6,8 @@ import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.mirkoalicastro.mavenversionrefactor.factory.PomFactory
-import com.mirkoalicastro.mavenversionrefactor.provider.VersionNamingProvider
+import io.github.mirkoalicastro.mavenversionrefactor.factory.PomFactory
+import io.github.mirkoalicastro.mavenversionrefactor.provider.VersionNamingProvider
 
 class MavenVersionRefactorAction : PsiElementBaseIntentionAction(), IntentionAction, HighPriorityAction {
     private val pomFactory = PomFactory()

@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.maven
+package io.github.mirkoalicastro.mavenversionrefactor.maven
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec

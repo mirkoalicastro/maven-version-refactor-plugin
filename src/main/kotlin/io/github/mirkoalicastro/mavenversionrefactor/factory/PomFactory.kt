@@ -1,14 +1,14 @@
-package com.mirkoalicastro.mavenversionrefactor.factory
+package io.github.mirkoalicastro.mavenversionrefactor.factory
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
-import com.mirkoalicastro.mavenversionrefactor.maven.Pom
-import com.mirkoalicastro.mavenversionrefactor.maven.Tag
-import com.mirkoalicastro.mavenversionrefactor.maven.Version
-import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
-import com.mirkoalicastro.mavenversionrefactor.xml.textValue
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Pom
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Tag
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Version
+import io.github.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.github.mirkoalicastro.mavenversionrefactor.xml.textValue
 
 private val variablePattern = Regex("^\\s*\\$\\s*\\{.+}\\s*$")
 

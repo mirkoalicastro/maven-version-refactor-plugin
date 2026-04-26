@@ -1,9 +1,9 @@
-package com.mirkoalicastro.mavenversionrefactor.provider
+package io.github.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
-import com.mirkoalicastro.mavenversionrefactor.maven.Pom
-import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Pom
+import io.github.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.forAll
 import io.kotest.data.headers
@@ -26,7 +26,7 @@ class VersionNamingProviderTest : StringSpec({
     val underTest = VersionNamingProvider()
 
     beforeTest {
-        mockkStatic("com.mirkoalicastro.mavenversionrefactor.xml.Extensions")
+        mockkStatic("io.github.mirkoalicastro.mavenversionrefactor.xml.Extensions")
     }
 
     afterTest {

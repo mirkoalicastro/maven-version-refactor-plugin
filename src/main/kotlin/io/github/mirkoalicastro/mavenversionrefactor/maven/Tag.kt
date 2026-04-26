@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.maven
+package io.github.mirkoalicastro.mavenversionrefactor.maven
 
 enum class Tag(val value: String) {
     Properties("properties"),

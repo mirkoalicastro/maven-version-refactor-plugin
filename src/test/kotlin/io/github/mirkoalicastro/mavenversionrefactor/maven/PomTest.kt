@@ -1,7 +1,7 @@
-package com.mirkoalicastro.mavenversionrefactor.maven
+package io.github.mirkoalicastro.mavenversionrefactor.maven
 
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.github.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -43,7 +43,7 @@ class PomTest : StringSpec({
         }
 
     beforeTest {
-        mockkStatic("com.mirkoalicastro.mavenversionrefactor.xml.Extensions")
+        mockkStatic("io.github.mirkoalicastro.mavenversionrefactor.xml.Extensions")
     }
 
     afterTest {

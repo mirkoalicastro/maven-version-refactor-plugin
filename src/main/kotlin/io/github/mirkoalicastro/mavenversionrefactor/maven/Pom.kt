@@ -1,7 +1,7 @@
-package com.mirkoalicastro.mavenversionrefactor.maven
+package io.github.mirkoalicastro.mavenversionrefactor.maven
 
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.github.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 
 data class Pom(
     val project: XmlTag,

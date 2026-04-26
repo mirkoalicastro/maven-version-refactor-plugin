@@ -1,10 +1,10 @@
-package com.mirkoalicastro.mavenversionrefactor.provider
+package io.github.mirkoalicastro.mavenversionrefactor.provider
 
 import com.intellij.psi.xml.XmlTag
-import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
-import com.mirkoalicastro.mavenversionrefactor.maven.Pom
-import com.mirkoalicastro.mavenversionrefactor.maven.Tag.Properties
-import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Pom
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Tag
+import io.github.mirkoalicastro.mavenversionrefactor.xml.getChildTag
 import org.apache.xerces.util.XMLChar
 
 private const val VERSION_SUFFIX = ".version"
@@ -12,7 +12,7 @@ private const val MAX_ATTEMPTS = 3
 
 class VersionNamingProvider {
     fun provide(pom: Pom): String? {
-        val properties = pom.project.getChildTag(Properties.value)
+        val properties = pom.project.getChildTag(Tag.Properties.value)
         val candidate = pom.dependency.artifactId + VERSION_SUFFIX
         return if (isPropertyAvailable(properties, candidate)) {
             candidate

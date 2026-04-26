@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.mirkoalicastro.mavenversionrefactor</id>
+    <id>io.github.mirkoalicastro.mavenversionrefactor</id>
     <name>Maven Version Refactor</name>
     <version>1.0.7</version>
     <vendor email="mirkoalicastro@gmail.com" url="http://www.mirkoalicastro.com">Mirko Alicastro</vendor>
@@ -11,7 +11,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <intentionAction order="first">
-            <className>com.mirkoalicastro.mavenversionrefactor.MavenVersionRefactorAction</className>
+            <className>io.github.mirkoalicastro.mavenversionrefactor.MavenVersionRefactorAction</className>
         </intentionAction>
     </extensions>
 </idea-plugin>

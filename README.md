@@ -1,6 +1,6 @@
 # Maven Version Refactor Plugin
 
-![Version](https://img.shields.io/jetbrains/plugin/v/com.mirkoalicastro.mavenversionrefactor)
+![Version](https://img.shields.io/jetbrains/plugin/v/io.github.mirkoalicastro.mavenversionrefactor)
 
 ## Description
 

@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.factory
+package io.github.mirkoalicastro.mavenversionrefactor.factory
 
 import com.intellij.json.psi.JsonFile
 import com.intellij.psi.PsiElement
@@ -6,11 +6,11 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlTagValue
 import com.intellij.psi.xml.XmlText
-import com.mirkoalicastro.mavenversionrefactor.maven.Dependency
-import com.mirkoalicastro.mavenversionrefactor.maven.Pom
-import com.mirkoalicastro.mavenversionrefactor.maven.Version
-import com.mirkoalicastro.mavenversionrefactor.xml.getChildTag
-import com.mirkoalicastro.mavenversionrefactor.xml.textValue
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Dependency
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Pom
+import io.github.mirkoalicastro.mavenversionrefactor.maven.Version
+import io.github.mirkoalicastro.mavenversionrefactor.xml.getChildTag
+import io.github.mirkoalicastro.mavenversionrefactor.xml.textValue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.forAll
 import io.kotest.data.headers
@@ -35,7 +35,7 @@ class PomFactoryTest : StringSpec({
     val underTest = PomFactory()
 
     beforeTest {
-        mockkStatic("com.mirkoalicastro.mavenversionrefactor.xml.Extensions")
+        mockkStatic("io.github.mirkoalicastro.mavenversionrefactor.xml.Extensions")
     }
 
     afterTest {

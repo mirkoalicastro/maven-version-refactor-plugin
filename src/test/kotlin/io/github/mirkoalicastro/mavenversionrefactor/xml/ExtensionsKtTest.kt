@@ -1,4 +1,4 @@
-package com.mirkoalicastro.mavenversionrefactor.xml
+package io.github.mirkoalicastro.mavenversionrefactor.xml
 
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlTagChild
